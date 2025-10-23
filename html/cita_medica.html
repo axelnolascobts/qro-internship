@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Appointment</title>
+</head>
+
+<body>
+    <header>
+        <h1>Make an Appointment:</h1>
+    </header>
+
+    <main>
+        <form method="get" action="confirm_appointment.html">
+            <fieldset>
+                <legend><b>Personal Details</b></legend>
+
+                <label for="name">Name:</label><br>
+                <input type="text" id="name" name="name" placeholder="ex: Kevin Rojas" required>
+                <br><br>
+
+                <label for="email">Email:</label><br>
+                <input type="email" id="email" name="email" placeholder="example@gmail.com" required>
+                <br><br>
+
+                <label for="telephone">Telephone Number:</label><br>
+                <input type="tel" id="telephone" name="telephone" pattern="[0-9]{10}" placeholder="10 digits" required>
+                <br><br>
+
+                <label>Gender:</label><br>
+                <label for="male">Male</label>
+                <input type="radio" id="male" name="gender" value="Male" required>
+
+                <label for="female">Female</label>
+                <input type="radio" id="female" name="gender" value="Female" required>
+
+                <label for="other">Other</label>
+                <input type="radio" id="other" name="gender" value="Other" required>
+            </fieldset>
+
+            <br>
+            <fieldset>
+                <legend><b>Appointment Details</b></legend>
+
+                <label for="date">Appointment Date:</label><br>
+                <input type="date" id="date" name="date" required>
+                <br><br>
+
+                <label for="time">Appointment Time:</label><br>
+                <input type="time" id="time" name="time" required>
+                <br><br>
+
+                <label for="specialty">Specialty:</label><br>
+                <select id="specialty" name="specialty" required>
+                    <option value="">Select an option</option>
+                    <option value="General Medicine">General Medicine</option>
+                    <option value="Pediatrics">Pediatrics</option>
+                    <option value="Dermatologhy">Dermatology</option>
+                    <option value="Cardiology">Cardiology</option>
+                </select>
+                <br><br>
+
+                <label for="reason">Reason for Appointment:</label><br>
+                <textarea id="reason" name="reason" placeholder="type here" required></textarea>
+                <br><br>
+
+                <label for="checkbox">Receive email reminders (Optional)</label><br>
+                <input type="checkbox" id="reminder" name="reminder" value="Yes">
+            </fieldset>
+
+            <br>
+            <input type="submit" value="Book Appointment">
+        </form>
+    </main>
+
+</body>
+
+</html>
