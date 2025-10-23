@@ -16,7 +16,7 @@
           <legend>Datos de Contacto</legend>
           <label for="userName">Nombre:</label>
           <br>
-          <input type="text" id="userName" name="userName" placeholder="Nombre" required>
+          <input type="text" id="userName" name="userName" placeholder="Nombre" maxlength="30" required>
           <br>
 
           <label for="email">Email:</label>
@@ -35,7 +35,7 @@
           <legend>Detalles de la Cita</legend>
           <label for="fecha">Fecha:</label>
           <br>
-          <input type="date" id="fecha" name="fecha" placeholder="2025-01-01" required>
+          <input type="date" id="fecha" name="fecha" placeholder="2025-01-01" min="2025-10-22" required>
           <br>
 
           <label for="hora">Hora:</label>
@@ -59,15 +59,15 @@
           <textarea id="razon" name="razon" rows="5" cols="70" placeholder="Escribe aqui: " required></textarea>
           <br>
 
-          <label for="genders">Genero:</label>
+          <label for="generos">Genero:</label>
           <br>
-          <input type="radio" id="male" name="gender" value="male" required>
+          <input type="radio" id="male" name="genero" value="male" required>
           <label for="male">M</label>
 
-          <input type="radio" id="female" name="gender" value="female" required>
+          <input type="radio" id="female" name="genero" value="female" required>
           <label for="female">F</label>
 
-          <input type="radio" id="other" name="gender" value="other" required>
+          <input type="radio" id="other" name="genero" value="other" required>
           <label for="other">Otro</label>
           <br>
 
@@ -78,7 +78,7 @@
           <br>
 
         </fieldset>
-        <button type="submit">Submit</button>
+        <button type="submit">Submitir</button>
       </form>
     </section>
   </main>
