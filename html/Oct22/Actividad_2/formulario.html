@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Formulario</title>
+</head>
+
+<body>
+  <main>
+    <h1>Formulario Medico</h1>
+    <section>
+      <form action="./citaProgramada.html" method="get">
+        <fieldset>
+          <legend>Datos de Contacto</legend>
+          <label for="userName">Nombre:</label>
+          <br>
+          <input type="text" id="userName" name="userName" placeholder="Nombre" required>
+          <br>
+
+          <label for="email">Email:</label>
+          <br>
+          <input type="email" id="userEmail" name="userEmail" placeholder="Email" required>
+          <br>
+
+          <label for="phone">Telefono:</label>
+          <br>
+          <input type="tel" id="phone" name="phone" pattern="\d{3}-\d{3}-\d{4}$" placeholder="Formato: ***-***-****"
+            required>
+          <br>
+        </fieldset>
+        <br>
+        <fieldset>
+          <legend>Detalles de la Cita</legend>
+          <label for="fecha">Fecha:</label>
+          <br>
+          <input type="date" id="fecha" name="fecha" placeholder="2025-01-01" required>
+          <br>
+
+          <label for="hora">Hora:</label>
+          <br>
+          <input type="time" id="hora" name="hora" placeholder="15:30" required>
+          <br>
+
+          <label for="especialidades">Especialidad:</label>
+          <br>
+          <select id="especialidades" name="especialidad" required>
+            <option value="">-- Selecciona una Especialidad --</option>
+            <option value="medicinaGeneral">Medicina General</option>
+            <option value="pediatra">Pediatra</option>
+            <option value="dermatologia">Dermatologia</option>
+            <option value="cardiologia">Cardiologia</option>
+          </select>
+          <br>
+
+          <label for="razon">Razon por agendar:</label>
+          <br>
+          <textarea id="razon" name="razon" rows="5" cols="70" placeholder="Escribe aqui: " required></textarea>
+          <br>
+
+          <label for="genders">Genero:</label>
+          <br>
+          <input type="radio" id="male" name="gender" value="male" required>
+          <label for="male">M</label>
+
+          <input type="radio" id="female" name="gender" value="female" required>
+          <label for="female">F</label>
+
+          <input type="radio" id="other" name="gender" value="other" required>
+          <label for="other">Otro</label>
+          <br>
+
+          <label for="recordatorio">
+            Recibir recordatorio?
+            <input type="checkbox" id="recordatorio" name="recordatorio" value="yes">
+          </label>
+          <br>
+
+        </fieldset>
+        <button type="submit">Submit</button>
+      </form>
+    </section>
+  </main>
+</body>
+
+</html>
