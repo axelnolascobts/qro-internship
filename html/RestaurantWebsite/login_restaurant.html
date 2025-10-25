@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Kevin's Kitchen</title>
+</head>
+
+<body>
+    <header>
+        <h1>Login Page</h1>
+    </header>
+    <main>
+        <form method="get" action="welcome_restaurant.html">
+            <!--If we want to not show the password in URL, use the method="post", but for the purpose of showing 
+        that the login works in this test, I chose to use "get".-->
+            <fieldset>
+                <legend>Login Here</legend>
+                <label for="email">Email:</label><br>
+                <input type="email" id="email" name="email" maxlength="20" placeholder="example@gmail.com" required>
+                <br><br>
+
+                <label for="name">Password:</label><br>
+                <input type="password" id="password" name="password" maxlength="12" placeholder="Max 12 characters"
+                    required>
+                <br><br>
+            </fieldset>
+
+            <input type="submit" value="Login">
+        </form>
+    </main>
+</body>
+
+</html>
