@@ -1,0 +1,25 @@
+#title {
+    background-color: #3498db;
+    text-align: center;
+    color: white;
+}
+
+article p {
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+article {
+    background-color: #ecf0f1;
+    border-color: black;
+}
+
+.foot {
+    background-color: #2c3e50;
+    color: white;
+}
+
+ul {
+    list-style-type: none;
+    text-align: center;
+}
