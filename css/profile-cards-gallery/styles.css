@@ -1,0 +1,40 @@
+section {
+    background-color: rgb(226, 214, 246);
+    width: 250px;
+    height: 500px;
+    display: inline-block;
+    vertical-align: top;
+    padding: 20px;
+    border: 5px solid black;
+    margin: 10px;
+    text-align: center;
+}
+
+h2::before {
+    content: "Profile Card:\A";
+    white-space: pre-wrap;
+    color: rgb(97, 97, 7);
+}
+
+h2:focus {
+    outline: 2px solid lightblue;
+    background-color: lightyellow;
+}
+
+p::after {
+    content: "\A - Added by: Kevin";
+    white-space: pre-wrap;
+    color: rgb(80, 27, 6)
+}
+
+p:active {
+    background-color: lightyellow;
+}
+
+img:hover {
+    background-color: aqua;
+}
+
+img:focus {
+    background-color: lightyellow;
+}
