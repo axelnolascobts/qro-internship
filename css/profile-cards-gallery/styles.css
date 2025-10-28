@@ -1,0 +1,44 @@
+body {
+  margin: 0;
+  background: #f5f6fa;
+}
+
+.profile-card {
+  display: inline-block;
+  width: 30vw;
+  vertical-align: top;
+  margin: 1.5rem;
+  background: #fff;
+  border: 1px solid #dfe3eb;
+  border-radius: 1rem;
+  text-align: center;
+}
+
+.profile-card img {
+  width: 200px;
+  height: 200px;
+  border: 2px solid #000;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+.profile-card::before {
+  display: block;
+  content: '────── ⋆⋅☆⋅⋆ ──────';
+}
+
+.profile-card::after {
+  content: '────── ⋆⋅☆⋅⋆ ──────';
+}
+
+.profile-card:hover,
+.profile-card:focus {
+  background-color: #dfe3e5;
+}
+
+.profile-card:hover img,
+.profile-card:focus img {
+  background-color: #fff;
+}
