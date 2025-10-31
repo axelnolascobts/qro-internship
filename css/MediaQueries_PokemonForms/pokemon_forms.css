@@ -1,0 +1,109 @@
+body {
+    margin: 0;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    text-align: center;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: lightgray;
+}
+
+img {
+    width: 200px;
+}
+
+.Form {
+    display: none
+}
+
+@media (min-width:576px) and (max-width: 767px) {
+
+    .Small.Form {
+        display: block;
+    }
+
+    .salamence {
+        background-color: lightblue;
+    }
+
+    .gengar {
+        background-color: rgb(158, 125, 158);
+    }
+
+    .golem {
+        background-color: rgb(145, 112, 96);
+    }
+
+    .machamp {
+        background-color: lightgreen;
+    }
+
+    .blastoise {
+        background-color: lightyellow;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .Form {
+        display: none;
+    }
+
+    .Medium.Form {
+        display: block;
+    }
+
+    .salamence {
+        background-color: rgb(98, 98, 240);
+    }
+
+    .gengar {
+        background-color: rgb(153, 78, 153);
+    }
+
+    .golem {
+        background-color: rgb(145, 83, 52);
+    }
+
+    .machamp {
+        background-color: rgb(70, 233, 70);
+    }
+
+    .blastoise {
+        background-color: rgb(249, 249, 114);
+    }
+}
+
+@media (min-width: 992px) {
+    .Form {
+        display: none;
+    }
+
+    .Large.Form {
+        display: block;
+    }
+
+    .salamence {
+        background-color: rgb(0, 67, 89);
+    }
+
+    .gengar {
+        background-color: rgb(81, 0, 81);
+    }
+
+    .golem {
+        background-color: rgb(93, 31, 0);
+    }
+
+    .machamp {
+        background-color: rgb(1, 56, 1);
+    }
+
+    .blastoise {
+        background-color: rgb(69, 69, 1);
+    }
+}
