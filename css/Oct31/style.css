@@ -1,0 +1,175 @@
+/*--- Base Styles ---*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background-color: #2c3e50;
+  color: white;
+  text-align: center;
+  padding: 1.5rem;
+}
+
+header h1 {
+  font-size: 2rem;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+footer {
+  background-color: #2c3e50;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+}
+
+/*--- (1st Evolution 576px) ---*/
+.pokemon-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pokemon-image {
+  max-width: 80vw;
+  height: auto;
+  max-height: 70vh;
+  /* object-fit: contain; */
+}
+
+.pokemon1 {
+  background-color: #b8d4e6;
+}
+
+.pokemon2 {
+  background-color: #ffd9a3;
+}
+
+.pokemon3 {
+  background-color: #f5e8a8;
+}
+
+.pokemon4 {
+  background-color: #d4b896;
+}
+
+.pokemon5 {
+  background-color: #c8e6f0;
+}
+
+/*--- (2nd Evolution 768px ) ---*/
+@media (min-width: 768px) {
+  .pokemon1 {
+    background-color: #7fa8c9;
+  }
+
+  .pokemon1 .pokemon-image {
+    content: url("public/pokemon1/2_metang.svg");
+  }
+
+  .pokemon2 {
+    background-color: #ffb366;
+  }
+
+  .pokemon2 .pokemon-image {
+    content: url("public/pokemon2/2_combusken.svg");
+  }
+
+  .pokemon3 {
+    background-color: #e8d470;
+  }
+
+  .pokemon3 .pokemon-image {
+    content: url("public/pokemon3/2_vibrava.svg");
+  }
+
+  .pokemon4 {
+    background-color: #b89968;
+  }
+
+  .pokemon4 .pokemon-image {
+    content: url("public/pokemon4/2_linoone.svg");
+  }
+
+  .pokemon5 {
+    background-color: #93cce0;
+  }
+
+  .pokemon5 .pokemon-image {
+    content: url("public/pokemon5/2_glalie.svg");
+  }
+
+  /*
+  1: #7fa8c9
+  2: #ffb366
+  3: #e8d470
+  4: #b89968
+  5: #93cce0
+  */
+}
+
+/*--- (3rd Evolution 992px ) ---*/
+@media (min-width: 992px) {
+  .pokemon1 {
+    background-color: #4a7ba7;
+  }
+
+  .pokemon1 .pokemon-image {
+    content: url("public/pokemon1/3_metagross.svg");
+  }
+
+  .pokemon2 {
+    background-color: #7fa8c9;
+  }
+
+  .pokemon2 .pokemon-image {
+    content: url("public/pokemon2/3_blaziken.svg");
+  }
+
+  .pokemon3 {
+    background-color: #ff8c1a;
+  }
+
+  .pokemon3 .pokemon-image {
+    content: url("public/pokemon3/3_flygon.svg");
+  }
+
+  .pokemon4 {
+    background-color: #8a6f3d;
+  }
+
+  .pokemon4 .pokemon-image {
+    content: url("public/pokemon4/3_obstagoon.svg");
+  }
+
+  .pokemon5 {
+    background-color: #5ab3d1;
+  }
+
+  .pokemon5 .pokemon-image {
+    content: url("public/pokemon5/3_mega_glalie.svg");
+  }
+
+  /*
+  1: #4a7ba7
+  2: #ff8c1a
+  3: #d4b83a
+  4: #8a6f3d
+  5: #5ab3d1
+  */
+}
