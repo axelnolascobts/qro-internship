@@ -1,68 +1,342 @@
-.the-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    grid-column-gap: 10px;
-    grid-row-gap: 10px;
+/*Set website defaults*/
+#the-body {
+    background-color: black;
+    height: 100%;
+    width: 100%;
 }
 
-.the-grid img {
-    width: 100%;
+/*------------------------------------------------*/
+
+/*Parent Container Grid Layout*/
+.parent-container {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    grid-template-areas:
+        "sidebar topbar"
+        "sidebar the-grid";
     height: 100%;
 }
 
-.div1 {
-    grid-area: 1 / 1 / 2 / 2;
+/*------------------------------------------------*/
+/*Sidebar: tumblr logo, nav, and login/signup */
+.sidebar.big {
+    display: flex;
+    flex-direction: column;
+
+    border: 1px solid gray;
+    color: white;
+    text-align: center;
+
+    padding: 1rem;
+    height: 85%;
+    grid-area: sidebar;
 }
 
-.div2 {
-    grid-area: 1 / 2 / 2 / 3;
+.sidebar.small {
+    display: flex;
+    flex-direction: row;
+
+    height: 100%;
+    grid-area: sidebar;
 }
 
-.div3 {
-    grid-area: 2 / 1 / 3 / 2;
+/*Mobile view details*/
+.small img {
+    width: auto;
+    height: 100%;
+    display: block;
 }
 
-.div4 {
-    grid-area: 2 / 2 / 3 / 3;
+.search-icon {
+    margin-left: auto;
+    padding-right: 10px;
 }
 
-.div5 {
-    grid-area: 1 / 3 / 3 / 5;
+
+/*Items in sidebar navigation*/
+.side-nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
 }
 
-.div6 {
-    grid-area: 3 / 1 / 5 / 3;
+/*------------------------------------------------*/
+/*Topbar: web page name and search buttons*/
+.topbar {
+    display: flex;
+    flex-direction: row;
+
+    border: 1px solid gray;
+    color: white;
+    font-size: x-small;
+
+    grid-area: topbar;
+    flex: 1;
 }
 
-.div7 {
-    grid-area: 3 / 3 / 4 / 4;
+.create {
+    margin-left: auto;
 }
 
-.div8 {
-    grid-area: 3 / 4 / 4 / 5;
+/*------------------------------------------------*/
+/*Bottombar: Sign up and login ad.*/
+.bottombar {
+    display: flex;
+    position: fixed;
+    flex-direction: column;
+
+    bottom: 0;
+    left: 0;
+
+    text-align: center;
+    align-items: center;
+    background-color: purple;
+    color: white;
+
+    height: 15%;
+    width: 100%;
+    z-index: 1000;
 }
 
-.div9 {
-    grid-area: 4 / 3 / 5 / 4;
+/*------------------------------------------------*/
+/*Regular Footer: about us, apps, etc.*/
+.info-footer li {
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 50px;
+    color: white;
 }
 
-.div10 {
-    grid-area: 4 / 4 / 5 / 5;
+.info-footer {
+    margin-bottom: 150px;
+
 }
 
-.div11 {
-    grid-area: 5 / 1 / 6 / 2;
+/*------------------------------------------------*/
+/*Grid images*/
+.the-grid img {
+    width: 100%;
+    height: 100%;
+    display: block;
 }
 
-.div12 {
-    grid-area: 5 / 2 / 6 / 3;
+.the-grid p {
+    display: block;
+    color: white;
+    background-color: rgb(51, 50, 50);
+    height: 100%;
 }
 
-.div13 {
-    grid-area: 5 / 3 / 6 / 4;
+/*Default article grid*/
+.the-grid {
+    grid-column-gap: 10px;
+    grid-row-gap: 10px;
+    margin-bottom: 50px;
+    align-content: start;
+    grid-area: the-grid;
+    padding: 10px;
 }
 
-.div14 {
-    grid-area: 5 / 4 / 6 / 5;
+/*Mobile viewport*/
+@media (max-width: 376px) {
+
+    .sidebar.big,
+    .create,
+    .search {
+        display: none;
+    }
+
+    .create-small {
+        margin-left: auto;
+        margin-right: 20px;
+    }
+
+    .logo-small {
+        display: inline-block;
+        font-size: 50px;
+        color: white;
+        margin: 0 auto;
+        line-height: 1;
+    }
+
+    .bottombar {
+        height: 20%;
+    }
+
+    .topbar {
+        margin-top: 10%;
+        font-size: xx-small;
+        border: 0;
+    }
+
+    .parent-container {
+        grid-template-columns: 100%;
+        grid-template-rows: 1% 3% 96%;
+        grid-template-areas:
+            "sidebar"
+            "topbar"
+            "the-grid";
+    }
+
+    /*Mobile grid*/
+    .the-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(13, 1fr);
+        width: 100%;
+    }
+
+    /*Mobile grid items*/
+    .div1 {
+        grid-area: 1 / 1 / 2 / 2;
+    }
+
+    .div2 {
+        grid-area: 1 / 2 / 2 / 3;
+    }
+
+    .div3 {
+        grid-area: 2 / 1 / 4 / 3;
+    }
+
+    .div4 {
+        grid-area: 4 / 1 / 6 / 3;
+    }
+
+    .div5 {
+        grid-area: 6 / 1 / 7 / 2;
+    }
+
+    .div6 {
+        grid-area: 6 / 2 / 7 / 3;
+    }
+
+    .div7 {
+        grid-area: 7 / 1 / 8 / 2;
+    }
+
+    .div8 {
+        grid-area: 7 / 2 / 8 / 3;
+    }
+
+    .div9 {
+        grid-area: 8 / 1 / 10 / 3;
+    }
+
+    .div10 {
+        grid-area: 10 / 1 / 12 / 3;
+    }
+
+    .div11 {
+        grid-area: 12 / 1 / 13 / 2;
+    }
+
+    .div12 {
+        grid-area: 12 / 2 / 13 / 3;
+    }
+
+    .div13 {
+        grid-area: 13 / 1 / 14 / 2;
+    }
+
+    .div14 {
+        grid-area: 13 / 2 / 14 / 3;
+    }
+}
+
+/*Laptop and Desktop viewport*/
+@media (min-width:377px) {
+
+    .sidebar.small {
+        display: none;
+    }
+
+    .create-small {
+        display: none;
+    }
+
+    /*Tumblr Logo*/
+    .logo-full {
+        font-size: 50px;
+    }
+
+    .logo-small {
+        display: none;
+    }
+
+    .topbar {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .parent-container {
+        grid-template-columns: 20% 80%;
+    }
+
+    /*Big grid*/
+    .the-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(5, 1fr);
+        width: 100%;
+    }
+
+    /*Big grid items*/
+    .div1 {
+        grid-area: 1 / 1 / 2 / 2;
+    }
+
+    .div2 {
+        grid-area: 1 / 2 / 2 / 3;
+    }
+
+    .div3 {
+        grid-area: 2 / 1 / 3 / 2;
+    }
+
+    .div4 {
+        grid-area: 2 / 2 / 3 / 3;
+    }
+
+    .div5 {
+        grid-area: 1 / 3 / 3 / 5;
+    }
+
+    .div6 {
+        grid-area: 3 / 1 / 5 / 3;
+    }
+
+    .div7 {
+        grid-area: 3 / 3 / 4 / 4;
+    }
+
+    .div8 {
+        grid-area: 3 / 4 / 4 / 5;
+    }
+
+    .div9 {
+        grid-area: 4 / 3 / 5 / 4;
+    }
+
+    .div10 {
+        grid-area: 4 / 4 / 5 / 5;
+    }
+
+    .div11 {
+        grid-area: 5 / 1 / 6 / 2;
+    }
+
+    .div12 {
+        grid-area: 5 / 2 / 6 / 3;
+    }
+
+    .div13 {
+        grid-area: 5 / 3 / 6 / 4;
+    }
+
+    .div14 {
+        grid-area: 5 / 4 / 6 / 5;
+    }
 }
