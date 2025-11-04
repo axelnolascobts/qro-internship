@@ -1,24 +1,31 @@
 body {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   color: #fff;
   background-color: #000;
-}
-
-header {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-}
-
-main {
-  flex: 1;
+  margin: 0;
+  padding: 0;
 }
 
 .header--left {
   border: 1px solid #212121;
   height: 100vh;
   position: sticky;
+  top: 0;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+header {
+  width: 100%;
+}
+
+main {
+  flex: 1;
 }
 
 .search-container {
@@ -26,6 +33,7 @@ main {
   flex-direction: row;
   padding: 20px;
   flex: 1;
+  border-bottom: 1px solid #212121;
 }
 
 .search-container button {
