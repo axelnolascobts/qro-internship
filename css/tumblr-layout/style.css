@@ -350,10 +350,18 @@ main {
   font-size: 20px;
   font-weight: 600;
   padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mobile-header button:hover {
   background-color: var(--color-surface-light);
+}
+
+.mobile-header button img {
+  width: 30px;
+  height: 30px;
 }
 
 .mobile-header h1 {
