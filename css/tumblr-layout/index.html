@@ -5,185 +5,213 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tumblr Layout</title>
-  <link href="style.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <div class="mobile-header">
+  <!-- MOBILE START -->
+  <header class="mobile-header">
     <button>=</button>
     <h1>t</h1>
-    <button>O-</button>
-  </div>
+    <button>0-</button>
+  </header>
   <div class="mobile-create-container">
     <p>Browse communities</p>
     <button>Create community</button>
   </div>
-  <div class="mobile-main">
-    <section class="communities-container">
-      <div class="community-container">
+  <main class="mobile-main">
+    <section class="communities-grid">
+      <article class="community-card">
         <img src="./3_metagross.svg" alt="Metagross1">
         <p>Metagross1</p>
-      </div>
-      <div class="community-container">
+      </article>
+      <article class="community-card">
         <img src="./3_metagross.svg" alt="Metagross2">
         <p>Metagross2</p>
-      </div>
-      <div class="community-container--big">
+      </article>
+      <article class="community-card community-card--large">
         <img src="./3_metagross.svg" alt="Metagross3">
         <p>Metagross3</p>
-      </div>
-      <div class="community-container--big">
+      </article>
+      <article class="community-card community-card--large">
         <img src="./3_metagross.svg" alt="Metagross4">
         <p>Metagross4</p>
-      </div>
-      <div class="community-container">
+      </article>
+      <article class="community-card">
         <img src="./3_metagross.svg" alt="Metagross5">
         <p>Metagross5</p>
-      </div>
-      <div class="community-container">
+      </article>
+      <article class="community-card">
         <img src="./3_metagross.svg" alt="Metagross6">
         <p>Metagross6</p>
-      </div>
-      <div class="community-container">
+      </article>
+      <article class="community-card">
         <img src="./3_metagross.svg" alt="Metagross7">
         <p>Metagross7</p>
-      </div>
-      <div class="community-container">
+      </article>
+      <article class="community-card">
         <img src="./3_metagross.svg" alt="Metagross8">
         <p>Metagross8</p>
-      </div>
-      <div class="community-container--big">
+      </article>
+      <article class="community-card community-card--large">
         <img src="./3_metagross.svg" alt="Metagross9">
         <p>Metagross9</p>
-      </div>
-      <div class="community-container--big">
+      </article>
+      <article class="community-card community-card--large">
         <img src="./3_metagross.svg" alt="Metagross10">
         <p>Metagross10</p>
-      </div>
-      <div class="community-container">
+      </article>
+      <article class="community-card">
         <img src="./3_metagross.svg" alt="Metagross11">
         <p>Metagross11</p>
-      </div>
-      <div class="community-container">
+      </article>
+      <article class="community-card">
         <img src="./3_metagross.svg" alt="Metagross12">
         <p>Metagross12</p>
-      </div>
-      <div class="community-container">
+      </article>
+      <article class="community-card">
         <img src="./3_metagross.svg" alt="Metagross13">
         <p>Metagross13</p>
-      </div>
-      <div class="community-container">
+      </article>
+      <article class="community-card">
         <img src="./3_metagross.svg" alt="Metagross14">
         <p>Metagross14</p>
-      </div>
+      </article>
     </section>
-  </div>
-  <aside class="header--left">
-    <h1>tumblr</h1>
-    <nav>
+  </main>
+  <!-- MOBILE END -->
+
+  <!-- DESKTOP START -->
+
+  <!-- SIDEBAR START -->
+  <aside class="sidebar">
+    <h1 class="sidebar-title-mobile">t</h1>
+    <h1 class="sidebar-title-full">tumblr</h1>
+    <nav class="sidebar-nav">
       <ul>
         <li>
-          <button class="explore-btn-nav">Explore</button>
+          <button class="nav-btn explore">
+            <span class="nav-icon">E</span>
+            <span class="nav-text-full">Explore</span>
+          </button>
         </li>
         <li>
-          <button class="communities-btn-nav">Communities</button>
+          <button class="nav-btn communities">
+            <span class="nav-icon">C</span>
+            <span class="nav-text-full">Communities</span>
+          </button>
         </li>
         <li>
-          <button class="palette-btn-nav">Change palette</button>
+          <button class="nav-btn explore">
+            <span class="nav-icon">P</span>
+            <span class="nav-text-md">Palette</span>
+            <span class="nav-text-full">Change palette</span>
+          </button>
         </li>
         <li>
-          <button class="signup-btn-nav">Sign Up</button>
+          <button class="nav-btn nav-signup">Sign Up</button>
         </li>
         <li>
-          <button class="login-btn-nav">Log In</button>
+          <button class="nav-btn nav-login">Log In</button>
         </li>
       </ul>
     </nav>
   </aside>
+  <!-- SIDEBAR END -->
+
+  <!-- SEARCH+GRID START -->
   <div class="main-content">
-    <header>
-      <div class="search-container">
+    <header class="main-header">
+      <div class="search-bar">
         <p>Browse communities</p>
-        <button>Create a community</button>
-        <input type="text" name="search" placeholder="Search communities...">
+        <button class="search-bar-create-btn">Create a community</button>
+        <input type="search" name="search" placeholder="Search communities...">
       </div>
     </header>
     <main>
-      <section class="communities-container">
-        <div class="community-container">
+      <section class="communities-grid">
+        <article class="community-card">
           <img src="./3_metagross.svg" alt="Metagross1">
           <p>Metagross1</p>
-        </div>
-        <div class="community-container">
+        </article>
+        <article class="community-card">
           <img src="./3_metagross.svg" alt="Metagross2">
           <p>Metagross2</p>
-        </div>
-        <div class="community-container--big">
+        </article>
+        <article class="community-card community-card--large">
           <img src="./3_metagross.svg" alt="Metagross3">
           <p>Metagross3</p>
-        </div>
-        <div class="community-container">
+        </article>
+        <article class="community-card">
           <img src="./3_metagross.svg" alt="Metagross4">
           <p>Metagross4</p>
-        </div>
-        <div class="community-container">
+        </article>
+        <article class="community-card">
           <img src="./3_metagross.svg" alt="Metagross5">
           <p>Metagross5</p>
-        </div>
-        <div class="community-container--big">
+        </article>
+        <article class="community-card community-card--large">
           <img src="./3_metagross.svg" alt="Metagross6">
           <p>Metagross6</p>
-        </div>
-        <div class="community-container">
+        </article>
+        <article class="community-card">
           <img src="./3_metagross.svg" alt="Metagross7">
           <p>Metagross7</p>
-        </div>
-        <div class="community-container">
+        </article>
+        <article class="community-card">
           <img src="./3_metagross.svg" alt="Metagross8">
           <p>Metagross8</p>
-        </div>
-        <div class="community-container">
+        </article>
+        <article class="community-card">
           <img src="./3_metagross.svg" alt="Metagross9">
           <p>Metagross9</p>
-        </div>
-        <div class="community-container">
+        </article>
+        <article class="community-card">
           <img src="./3_metagross.svg" alt="Metagross10">
           <p>Metagross10</p>
-        </div>
-        <div class="community-container">
+        </article>
+        <article class="community-card">
           <img src="./3_metagross.svg" alt="Metagross11">
           <p>Metagross11</p>
-        </div>
-        <div class="community-container">
+        </article>
+        <article class="community-card">
           <img src="./3_metagross.svg" alt="Metagross12">
           <p>Metagross12</p>
-        </div>
-        <div class="community-container">
+        </article>
+        <article class="community-card">
           <img src="./3_metagross.svg" alt="Metagross13">
           <p>Metagross13</p>
-        </div>
-        <div class="community-container">
+        </article>
+        <article class="community-card">
           <img src="./3_metagross.svg" alt="Metagross14">
           <p>Metagross14</p>
-        </div>
+        </article>
       </section>
     </main>
-    <footer>
-
-      <a href="">About</a>
-      <a href="">Apps</a>
-      <a href="">Legal</a>
-      <a href="">Privacy</a>
-      <a href="">Help</a>
+    <footer class="main-footer">
+      <a href="#about">About</a>
+      <a href="#apps">Apps</a>
+      <a href="#legal">Legal</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#help">Help</a>
     </footer>
   </div>
-  <div class="floating-banner">
+  <!-- SEARCH+GRID END -->
+
+  <!-- DESKTOP END -->
+
+  <!-- BANNER START -->
+  <aside class="banner">
     <p>
-      Join over <b>100 million</b> people using <b>Tumblr</b> to find their <b>communities</b> and make <b>friends</b>.
+      Join over <strong>100 million</strong> people using <strong>Tumblr</strong> to find their
+      <strong>communities</strong> and make <strong>friends</strong>.
     </p>
-    <button>Log In</button>
-    <button> Sign Up</button>
-  </div>
+    <div class="banner-actions">
+      <button class="banner-btn">Sign Up</button>
+      <button class="banner-btn">Log In</button>
+    </div>
+  </aside>
+  <!-- BANNER END -->
 </body>
 
 </html>
