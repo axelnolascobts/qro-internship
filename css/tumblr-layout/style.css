@@ -167,6 +167,81 @@ button:hover {
   color: #000;
 }
 
+/*--- Sidebar ---*/
+.sidebar {
+  border-right: 1px solid var(--color-border);
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--padding-md);
+}
+
+.sidebar-title-mobile {
+  display: none;
+}
+
+.sidebar-title-full {
+  display: block;
+  margin-bottom: var(--padding-md);
+}
+
+.sidebar-nav ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nav-btn {
+  width: 100%;
+  text-align: left;
+  background-color: transparent;
+  border: none;
+  color: var(--color-text);
+  padding: 14px var(--padding-md);
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: var(--radius-lg);
+}
+
+.nav-btn:hover {
+  background-color: var(--color-surface-light);
+  color: var(--color-text);
+}
+
+.nav-btn-icon,
+.nav-text-medium {
+  display: none;
+}
+
+.nav-text-full {
+  display: inline;
+}
+
+.nav-signup {
+  background-color: var(--color-accent);
+  color: var(--color-bg);
+  font-weight: 600;
+  margin-top: var(--padding-sm);
+  text-align: center;
+}
+
+.nav-signup:hover {
+  background-color: var(--color-accent-hover);
+  color: #000;
+}
+
+.nav-login {
+  border: 1px solid #000;
+  text-align: center;
+}
+
+.nav-login:hover {
+  background-color: #fff;
+  color: #000;
+}
+
 /*--- Breakpoints ---*/
 
 /* When less than 990px, use the mobile layout. */
