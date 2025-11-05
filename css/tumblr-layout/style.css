@@ -210,13 +210,21 @@ button:hover {
   color: var(--color-text);
 }
 
-.nav-btn-icon,
 .nav-text-medium {
   display: none;
 }
 
 .nav-text-full {
   display: inline;
+}
+
+.nav-btn-icon {
+  display: inline;
+}
+
+.nav-btn-icon img {
+  height: 20px;
+  width: 20px;
 }
 
 .nav-signup {
@@ -323,6 +331,57 @@ main {
   margin-left: 20px;
 }
 
+/*--- Mobile ---*/
+.mobile-header {
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--padding-sm);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: var(--color-bg);
+}
+
+.mobile-header button {
+  background-color: transparent;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+  padding: 8px 12px;
+}
+
+.mobile-header button:hover {
+  background-color: var(--color-surface-light);
+}
+
+.mobile-header h1 {
+  margin: 0;
+}
+
+.mobile-create-container {
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--padding-md);
+}
+
+.mobile-create-container p {
+  margin: 0;
+}
+
+.mobile-create-container button {
+  background-color: var(--color-accent);
+  border: none;
+  color: #000;
+  font-weight: 600;
+  padding: var(--padding-sm) 16px;
+}
+
+.mobile-create-container button:hover {
+  background-color: var(--color-accent-hover);
+}
+
 /*--- Breakpoints ---*/
 
 /* When less than 990px, use the mobile layout. */
@@ -378,10 +437,100 @@ main {
   }
 }
 
-@media screen and (min-width: 1004px) {
+/* Greater than 991px */
+@media screen and (min-width: 991px) {
 
   .communities-grid .community-card:nth-child(3),
   .communities-grid .community-card:nth-child(6) {
     grid-area: span 2 / span 2;
+  }
+}
+
+/* Sidebar Breakpoints */
+
+/* 991px to 1012px (Icon Only) */
+@media screen and (min-width: 991px) and (max-width: 1012px) {
+  .sidebar-title-mobile {
+    display: block;
+    padding-bottom: 20px;
+  }
+
+  .sidebar-title-full {
+    display: none;
+  }
+
+  .nav-btn-icon {
+    display: inline;
+  }
+
+  .nav-text-medium,
+  .nav-text-full {
+    display: none;
+  }
+
+  .explore,
+  .communities,
+  .palette {
+    text-align: center;
+  }
+
+  .nav-login,
+  .nav-signup {
+    display: none;
+  }
+}
+
+/* Icon On Top of Name */
+@media screen and (min-width: 1013px) and (max-width: 1161px) {
+  .sidebar-title-mobile {
+    display: block;
+    padding-bottom: 20px;
+  }
+
+  .sidebar-title-full {
+    display: none;
+  }
+
+  .nav-signup,
+  .nav-login {
+    display: none;
+  }
+
+  .nav-text-medium {
+    display: inline;
+  }
+
+  li span:nth-child(3) {
+    display: none;
+  }
+
+  .nav-btn-icon {
+    display: inline;
+  }
+
+  .explore,
+  .communities,
+  .palette {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+@media screen and (min-width: 1162px) {
+  .nav-btn {
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-login,
+  .nav-signup {
+    justify-content: center;
+  }
+
+  .nav-btn-icon {
+    display: inline;
+    margin-right: 12px;
   }
 }
