@@ -3,7 +3,7 @@
   --grid-cols: 4;
   --gap: 8px;
 
-  /*--- Buttons ---*/
+  /*--- Buttons Spacing ---*/
   --padding-sm: 10px;
   --padding-md: 20px;
 
@@ -20,6 +20,10 @@
   --color-accent-alt-darker: #5d44c9;
   --color-surface: #0d0d0d;
   --color-surface-light: #1a1a1a;
+
+  /*--- Border Radius ---*/
+  --radius-sm: 4px;
+  --radius-lg: 50px;
 }
 
 /*--- Reset/Base ---*/
@@ -56,7 +60,52 @@ ul {
   display: none;
 }
 
+/*--- Grid Elements ---*/
+.communities-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), 1fr);
+  grid-auto-rows: 1fr;
+  gap: var(--gap);
+  padding: var(--padding-md);
+  grid-auto-flow: dense;
+}
+
+.community-card {
+  position: relative;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.community-card:hover {
+  border-color: var(--color-accent);
+}
+
+.community-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background-color: var(--color-border);
+}
+
+.community-card p {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: var(--gap) 12px;
+  font-weight: 600;
+  font-size: 14px;
+  background-color: rgba(26, 26, 26, 0.9);
+  z-index: 1;
+}
+
 /*--- Breakpoints ---*/
+
+/* When less than 990px, use the mobile layout. */
 @media screen and (max-width: 990px) {
   body {
     flex-direction: column;
@@ -72,5 +121,47 @@ ul {
   .mobile-header,
   .mobile-create-container {
     display: flex;
+  }
+}
+
+/* Grid Breakpoints */
+
+/* 0px to 359px */
+@media screen and (max-width: 359px) {
+  :root {
+    --grid-cols: 1;
+  }
+}
+
+/* 360px to 540px */
+@media screen and (min-width: 360px) and (max-width: 540px) {
+  :root {
+    --grid-cols: 2;
+  }
+
+  .community-card--large {
+    grid-area: span 2 / span 2;
+  }
+}
+
+/* 541px to 990px */
+@media screen and (min-width: 541px) and (max-width: 990px) {
+  :root {
+    --grid-cols: 3;
+  }
+
+  .communities-grid .community-card:nth-child(2),
+  .communities-grid .community-card:nth-child(4),
+  .communities-grid .community-card:nth-child(11),
+  .communities-grid .community-card:nth-child(13) {
+    grid-area: span 2 / span 2;
+  }
+}
+
+@media screen and (min-width: 1004px) {
+
+  .communities-grid .community-card:nth-child(3),
+  .communities-grid .community-card:nth-child(6) {
+    grid-area: span 2 / span 2;
   }
 }
