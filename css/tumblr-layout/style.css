@@ -53,6 +53,23 @@ ul {
   margin: 0;
 }
 
+button {
+  background-color: transparent;
+  color: var(--color-text);
+  border: 1px solid #fff;
+  border-radius: var(--radius-lg);
+  padding: var(--padding-sm) 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+button:hover {
+  background-color: #fff;
+  color: #000;
+}
+
 /*--- Mobile Elements ---*/
 .mobile-main,
 .mobile-header,
@@ -96,11 +113,58 @@ ul {
   left: 0;
   right: 0;
   margin: 0;
-  padding: var(--gap) 12px;
+  padding: 8px 12px;
   font-weight: 600;
   font-size: 14px;
   background-color: rgba(26, 26, 26, 0.9);
   z-index: 1;
+}
+
+/*---  Search Elements ---*/
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--padding-md);
+  padding: var(--padding-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.search-bar p {
+  margin: 0;
+}
+
+.search-bar input {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-dark);
+  border-radius: var(--radius-lg);
+  color: var(--color-text);
+  padding: 12px var(--padding-md);
+  font-size: 14px;
+  outline: none;
+  width: 300px;
+  font-family: inherit;
+}
+
+.search-bar input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.search-bar input:focus {
+  border-color: var(--color-accent);
+}
+
+.search-bar-create-btn {
+  margin-left: auto;
+  background-color: var(--color-accent);
+  border: none;
+  color: #000;
+  font-weight: 600;
+  padding: 12px var(--padding-md);
+}
+
+.search-bar-create-btn:hover {
+  background-color: var(--color-accent-hover);
+  color: #000;
 }
 
 /*--- Breakpoints ---*/
