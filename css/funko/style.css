@@ -171,6 +171,30 @@ body {
   animation: swing-right 1s ease-in-out infinite;
 }
 
+.claws {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 3px;
+  justify-content: center;
+}
+
+.claw {
+  width: 8px;
+  height: 12px;
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 40% 50% / 30% 70%;
+}
+
+.right-leg .claws,
+.left-leg .claws {
+  bottom: 0;
+  top: -8px;
+}
+
 /*--- Keyframes ---*/
 @keyframes swing-left {
 
