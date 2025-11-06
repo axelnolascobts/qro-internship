@@ -1,0 +1,74 @@
+/*
+Charmander Colors
+orange: #ef7f2d;
+orange-dark: #e77121;
+belly: #f1e3b6;
+mouth: #c58ac0;
+eye: #0b0b0b;
+white: #fff;
+flame-red: #c62a25;
+flame-yellow: #f4d25a; 
+*/
+
+/*--- Reset/Base ---*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  --orange: #ef7f2d;
+}
+
+
+body {
+  background-color: grey;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/*--- Funko ---*/
+
+.funko-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.head {
+  width: 330px;
+  height: 270px;
+  background-color: var(--orange);
+  position: relative;
+  z-index: 1;
+  border: 3px solid black;
+  border-radius: 46% / 52%;
+}
+
+.face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.eyes {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.eye {
+  width: 80px;
+  height: 80px;
+  background-color: black;
+  border-radius: 50%;
+  position: relative;
+}
