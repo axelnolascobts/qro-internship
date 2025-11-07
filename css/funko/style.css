@@ -1,0 +1,294 @@
+/*Page layout*/
+body {
+    box-sizing: border-box;
+    height: 100%;
+    margin: 0;
+    background: gray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/*Container that holds the character.*/
+.parent-container {
+    width: 700px;
+    margin: 40px auto;
+    position: relative;
+    transform-origin: center;
+    transform: translateY(0px);
+    top: 100px;
+}
+
+/*Head and ears*/
+.head {
+    width: 290px;
+    height: 270px;
+    background: black;
+    position: relative;
+    margin: 0 auto;
+    border-radius: 30% 30% 30% 30%;
+}
+
+.ears {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: black;
+    border-radius: 50%;
+    top: -110px;
+}
+
+.left-ear {
+    left: -60px;
+}
+
+.right-ear {
+    right: -60px;
+}
+
+/*Face, widow's peak, eyes, and nose*/
+.face {
+    width: 270px;
+    height: 240px;
+    background: white;
+    position: relative;
+    margin: 0 auto;
+    border-radius: 100% 100% 50% 50%;
+    top: 20px;
+}
+
+.eyes {
+    width: 60px;
+    height: 60px;
+    background: black;
+    position: absolute;
+    border-radius: 50%;
+    top: 100px;
+}
+
+.left-eye {
+    left: 45px;
+}
+
+.right-eye {
+    right: 45px;
+}
+
+.lid {
+    width: 60px;
+    height: 5px;
+    background: black;
+    position: absolute;
+    top: 125px;
+}
+
+.right-lid1 {
+    right: 45px;
+}
+
+.left-lid1 {
+    left: 45px;
+}
+
+.right-lid2 {
+    width: 40px;
+    right: 65px;
+    top: 110px;
+    transform: rotate(-25deg);
+}
+
+.left-lid2 {
+    width: 40px;
+    left: 65px;
+    top: 110px;
+    transform: rotate(25deg);
+}
+
+.widow {
+    width: 80px;
+    height: 100px;
+    background: black;
+    position: relative;
+    clip-path: polygon(0 0, 100% 0%, 50% 100%);
+    left: 100px;
+}
+
+.nose {
+    width: 45px;
+    height: 30px;
+    background: black;
+    border-radius: 50%;
+    position: relative;
+    left: 117px;
+    top: 60px;
+}
+
+/*Body, pants, and buttons*/
+.char-body {
+    width: 140px;
+    height: 140px;
+    background: black;
+    position: relative;
+    border-radius: 50% 50% 20% 20% / 100% 100%;
+    margin: 0 auto;
+}
+
+.pants {
+    width: 140px;
+    height: 70px;
+    background: red;
+    position: relative;
+    bottom: 0;
+    border-radius: 0 0 20px 20px;
+    top: 70px;
+}
+
+.buttons {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 10px;
+}
+
+.left-button {
+    left: 20px;
+}
+
+.right-button {
+    right: 20px;
+}
+
+/*Legs and shoes*/
+.legs {
+    width: 30px;
+    height: 60px;
+    background: black;
+    position: absolute;
+    bottom: -55px;
+    border-radius: 10px;
+    z-index: -1;
+}
+
+.left-leg {
+    transform: rotate(10deg);
+    left: 10px;
+}
+
+.right-leg {
+    transform: rotate(-10deg);
+    right: 10px;
+}
+
+.shoe {
+    width: 110px;
+    height: 45px;
+    background: rgb(179, 179, 80);
+    border-radius: 40px;
+    position: absolute;
+    bottom: -20px;
+}
+
+.left-shoe {
+    right: 0px;
+    transform: rotate(-10deg);
+}
+
+.right-shoe {
+    left: 0px;
+    transform: rotate(10deg);
+}
+
+/*Arms and gloves*/
+.forearms {
+    width: 80px;
+    height: 30px;
+    background: black;
+    border-radius: 10px;
+    position: absolute;
+    top: 20px;
+}
+
+.left-forearm {
+    left: -55px;
+    transform: rotate(-30deg);
+}
+
+.right-forearm {
+    right: -55px;
+    transform: rotate(30deg);
+}
+
+.glove {
+    width: 60px;
+    height: 45px;
+    background: white;
+    position: absolute;
+    top: -8px;
+}
+
+.left-glove {
+    left: -35px;
+    border-radius: 50% 20% 20% 50%;
+}
+
+.right-glove {
+    right: -35px;
+    border-radius: 20% 50% 50% 20%;
+}
+
+.parent-container:hover .left-forearm {
+    transform-origin: right center;
+    animation: wave-left 2s infinite;
+    top: 0;
+}
+
+@keyframes wave-left {
+
+    0%,
+    100% {
+        transform: rotate(-30deg);
+    }
+
+    50% {
+        transform: rotate(-5deg);
+    }
+}
+
+.parent-container:hover .right-forearm {
+    animation: wave-right 2s infinite;
+    transform-origin: left center;
+    top: 0;
+}
+
+@keyframes wave-right {
+
+    0%,
+    100% {
+        transform: rotate(30deg);
+    }
+
+    50% {
+        transform: rotate(5deg);
+    }
+}
+
+.parent-container:hover .right-eye,
+.parent-container:hover .left-eye {
+    animation: wink 2s ease-in-out infinite;
+    animation-delay: 0.4s;
+}
+
+@keyframes wink {
+
+    0%,
+    50%,
+    100% {
+        opacity: 1;
+    }
+
+    25% {
+        opacity: 0;
+    }
+}
