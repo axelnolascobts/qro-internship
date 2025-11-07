@@ -1,0 +1,31 @@
+.parent {
+    display: flex;
+}
+
+.images-grid {
+    display: grid;
+    border: 8px;
+}
+
+.images-grid img:hover {
+    background-color: gray;
+    transition: 1s ease;
+}
+
+@media (max-width: 480px) {
+    .images-grid {
+        grid-template-columns: repeat(1fr);
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .images-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 769px) {
+    .images-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
