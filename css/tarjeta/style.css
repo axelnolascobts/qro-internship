@@ -1,0 +1,55 @@
+body {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  background-color: #7062C2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.main-container {
+  background-color: white;
+  width: 450px;
+  height: 500px;
+  border-radius: 5%;
+  display: flex;
+  justify-content: center;
+}
+
+#profile-pic {
+  background-color: transparent;
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  top: 10%;
+  border-radius: 50%;
+  border: 5px solid #667EEA;
+}
+
+h1 {
+  position: absolute;
+  bottom: 590px;
+}
+
+p {
+  position: absolute;
+  bottom: 570px;
+  color: #777;
+}
+
+/* facebook */
+button:nth-of-type(1) {
+  background-color: #1A76F2;
+}
+
+/* twitter */
+button:nth-of-type(2) {
+  background-color: #1A76F2;
+}
+
+/* instagram */
+button:nth-of-type(3) {
+  background-color: #1A76F2;
+}
