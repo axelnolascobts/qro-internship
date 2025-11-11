@@ -1,5 +1,7 @@
+import { inputPrompt } from "../input.js";
+
 console.log("1. Verify if a number is positive, negative, or zero");
-let num1 = Number(prompt("Give me a number to determine if it is positive or negative:"));
+let num1 = Number(await inputPrompt("Give me a number to determine if it is positive or negative: "));
 if (num1 > 0) {
   console.log("Positive");
 } else if (num1 < 0) {
@@ -11,7 +13,7 @@ console.log();
 
 
 console.log("2. Return the name of the day");
-let num2 = Number(prompt("Give me a number for the weekday:"));
+let num2 = Number(await inputPrompt("Give me a number for the weekday: "));
 switch (num2) {
   case 1:
     console.log("Monday");
@@ -51,21 +53,22 @@ console.log();
 console.log("4. Ask for a number until it’s greater than 50");
 let num4;
 do {
-  num4 = Number(prompt("Give me a number greater than 50:"));
+  num4 = Number(await inputPrompt("Give me a number greater than 50: "));
 } while (num4 <= 50);
 console.log(`${num4} is greater than 50.`);
 console.log();
 
 console.log("5. Check if a number is even or odd");
-let num5 = Number(prompt("Give me a number to check if it is even or odd:"));
+let num5 = Number(await inputPrompt("Give me a number to check if it is even or odd: "));
 if (num5 % 2) {
   console.log("Odd");
 } else {
   console.log("Even");
 }
+console.log();
 
 console.log("6. Multiplication table");
-let num6 = Number(prompt("Give me a number to print it's multiplication table:"));
+let num6 = Number(await inputPrompt("Give me a number to print it's multiplication table: "));
 if (num6 > 0 && num6 < 11) {
   for (let i = 1; i < 11; i++) {
     console.log(i * num6);
@@ -81,7 +84,7 @@ console.log("Done!");
 console.log();
 
 console.log("8. Simple grading system");
-let score = Number(prompt("Enter a score from 0 to 100:"));
+let score = Number(await inputPrompt("Enter a score from 0 to 100: "));
 if (score >= 90 && score <= 100) {
   console.log("A");
 } else if (score >= 80 && score < 90) {
