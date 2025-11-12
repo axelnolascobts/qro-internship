@@ -67,13 +67,10 @@ console.log(`Backwards: ${backwards(str)}`);
 
 // Q6
 function palindrome(string) {
-    let original = string.split(",");
-    let comparison = [];
-    comparison = backwards(string);
-    comparison = string.split[","];
+    let comparison = backwards(string);
 
     for (let i = string.length; i >= 0; i--) {
-        if (original[i] !== comparison[i]) {
+        if (string[i] !== comparison[i]) {
             return false;
         }
     }
@@ -82,3 +79,4 @@ function palindrome(string) {
 let test1 = "mom";
 let test2 = "moo";
 console.log(`Palindrome: ${palindrome(test1)}`);
+console.log(`Palindrome: ${palindrome(test2)}`);
