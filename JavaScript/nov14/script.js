@@ -35,7 +35,8 @@ function addTask() {
   const newTask = {
     id: taskIdCounter++,
     text: taskText,
-    completed: false
+    completed: false,
+    isNew: true
   };
 
   tasks.push(newTask);
@@ -78,6 +79,10 @@ function renderTasks() {
 
     const taskItem = document.createElement("div");
     taskItem.className = "task-item";
+    if (task.isNew) {
+      taskItem.classList.add("task-item-enter");
+      task.isNew = false;
+    }
     if (task.completed) {
       taskItem.classList.add("completed");
     }

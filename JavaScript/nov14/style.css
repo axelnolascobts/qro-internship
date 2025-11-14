@@ -196,3 +196,19 @@ main {
   font-weight: bolder;
   margin-left: 0.5rem;
 }
+
+.task-item-enter {
+  animation: slideDown 0.15s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
