@@ -13,11 +13,13 @@
     <h1>To-Do List</h1>
   </header>
   <main>
-    <div class="input-container">
-      <input type="text" id="inputTask" name="inputTask" placeholder="Write a new task..." maxlength="100">
-      <button id="btnAdd" class="btn-add">Add Task</button>
+    <div class="main-container">
+      <div class="input-container">
+        <input type="text" id="inputTask" name="inputTask" placeholder="Write a new task..." maxlength="100">
+        <button id="btnAdd" class="btn-add">Add Task</button>
+      </div>
+      <div id="taskList" class="tasks-container"></div>
     </div>
-    <div id="taskList" class="tasks-container"></div>
   </main>
   <script src="script.js"></script>
 </body>

@@ -63,7 +63,7 @@ function renderTasks() {
   taskList.innerHTML = "";
 
   if (tasks.length === 0) {
-    taskList.innerHTML = "<p>No tasks yet. Add your first task!</p>"
+    taskList.innerHTML = "<p class='empty-message'>No tasks yet. Add your first task!</p>"
     return;
   }
 
