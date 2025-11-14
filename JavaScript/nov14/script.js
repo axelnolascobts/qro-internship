@@ -48,6 +48,17 @@ function deleteTask(id) {
   renderTasks();
 }
 
+function markTask(id) {
+  for (let i = 0; i < tasks.length; i++) {
+    if (tasks[i].id === id) {
+      tasks[i].completed = !tasks[i].completed;
+      break;
+    }
+  }
+  renderTasks();
+  return;
+}
+
 function renderTasks() {
   taskList.innerHTML = "";
 
@@ -79,7 +90,15 @@ function renderTasks() {
       deleteTask(task.id);
     });
 
+    const btnComplete = document.createElement("button");
+    btnComplete.className = "btn-complete";
+    btnComplete.textContent = task.completed ? "Undo" : "Complete";
+    btnComplete.addEventListener("click", () => {
+      markTask(task.id);
+    });
+
     buttonsContainer.appendChild(btnDelete);
+    buttonsContainer.appendChild(btnComplete);
 
     taskItem.appendChild(taskText);
     taskItem.appendChild(buttonsContainer);
