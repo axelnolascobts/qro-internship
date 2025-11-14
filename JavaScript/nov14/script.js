@@ -5,6 +5,7 @@ let taskIdCounter = 1;
 const inputTask = document.getElementById("inputTask");
 const btnAdd = document.getElementById("btnAdd");
 const taskList = document.getElementById("taskList");
+const pendingNum = document.getElementById("pendingNum");
 
 btnAdd.addEventListener("click", addTask);
 
@@ -41,11 +42,15 @@ function addTask() {
 
   inputTask.value = "";
   renderTasks();
+  updateCounter();
+  return;
 }
 
 function deleteTask(id) {
   tasks = tasks.filter((task) => { return task.id !== id });
   renderTasks();
+  updateCounter();
+  return;
 }
 
 function markTask(id) {
@@ -56,6 +61,7 @@ function markTask(id) {
     }
   }
   renderTasks();
+  updateCounter();
   return;
 }
 
@@ -105,5 +111,19 @@ function renderTasks() {
 
     taskList.appendChild(taskItem);
   }
+  return;
 }
+
+function updateCounter() {
+  let pendingCount = 0;
+
+  for (let i = 0; i < tasks.length; i++) {
+    if (!tasks[i].completed) {
+      pendingCount++;
+    }
+  }
+  pendingNum.textContent = pendingCount;
+  return;
+}
+
 renderTasks();

@@ -6,7 +6,7 @@
 
 body {
   font-family: sans-serif;
-  background-color: grey;
+  background-color: slategrey;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -110,8 +110,11 @@ main {
   flex: 1;
   font-size: 1rem;
   color: grey;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
   padding-right: 1rem;
+  max-width: 100%;
 }
 
 .task-item.completed {
@@ -168,4 +171,28 @@ main {
 .btn-delete:hover {
   background-color: #c82333;
   transform: scale(1.05);
+}
+
+.counter-container {
+  background-color: lightslategray;
+  color: white;
+  padding: 1rem;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#taskCounter {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+#pendingNum {
+  font-size: 1.5rem;
+  font-weight: bolder;
+  margin-left: 0.5rem;
 }
