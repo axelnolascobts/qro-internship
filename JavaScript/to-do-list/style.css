@@ -1,0 +1,67 @@
+.parent-container {
+    background: lightgray;
+    padding: 20px;
+    width: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+.inputs-area {
+    display: flex;
+    gap: 10px;
+}
+
+input {
+    flex: 1;
+    padding: 8px;
+}
+
+button {
+    padding: 8px 8px;
+    cursor: pointer;
+}
+
+.error {
+    color: red;
+    font-size: 14px;
+}
+
+/*ul*/
+#listOfTasks {
+    margin: 0;
+    padding: 0;
+}
+
+/*li*/
+.item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    word-break: break-all;
+    background: white;
+
+    padding: 8px;
+    margin-top: 10px;
+    border-radius: 6px;
+}
+
+.complete-task {
+    text-decoration: line-through;
+    background-color: lightgreen;
+}
+
+.complete-btn {
+    margin-left: auto;
+    margin-right: 10px;
+    background-color: rgb(190, 240, 190);
+    font-weight: bold;
+}
+
+.eliminate-btn {
+    background-color: rgb(235, 177, 177);
+    font-weight: bold;
+}
