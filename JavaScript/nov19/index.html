@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conway's Game of Life Sim</title>
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+  <header>
+    <h1>Conway's Game of Life Sim</h1>
+  </header>
+  <main>
+    <div class="buttons-container">
+      <button id="startBtn">Start</button>
+      <button id="stopBtn">Stop</button>
+      <button id="nextBtn">Next</button>
+      <button id="clearBtn">Clear</button>
+      <button id="resetBtn">Reset</button>
+    </div>
+    <div class="progress-container">
+      <label for="speedSlider">Speed:</label>
+      <input type="range" name="speedSlider" id="speedSlider" min="50" max="500" value="500" step="50">
+      <span id="speedValue">500ms</span>
+      <span>Generation: <span id="generation">0</span></span>
+    </div>
+    <div id="gridContainer"></div>
+  </main>
+  <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,94 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  background-color: slategray;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+header {
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 2rem;
+  text-align: center;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.buttons-container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #2B0AB7;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #3d10e6;
+}
+
+button:active {
+  background-color: #1f0780;
+}
+
+.progress-container {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#speedSlider {
+  width: 150px;
+  accent-color: #2B0AB7;
+}
+
+#gridContainer {
+  display: grid;
+  gap: 1px;
+  background-color: #353B3E;
+  border: 2px solid #2B0AB7;
+  padding: 1px;
+}
+
+.cell {
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  cursor: pointer;
+  transition: background-color 0.1s;
+}
+
+.cell.alive {
+  background-color: #2B0AB7;
+}
+
+.cell:hover {
+  opacity: 0.8;
+}
