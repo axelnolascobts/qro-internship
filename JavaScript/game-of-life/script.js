@@ -9,6 +9,7 @@ const cols = 20;
 // Grabs the grid container and counter display.
 const gridWrapper = document.querySelector(".the_grid");
 const counter = document.querySelector(".stage_counter");
+const population = document.querySelector(".population");
 
 // Buttons for controlling the simulation
 const startBtn = document.getElementById("start");
@@ -36,8 +37,9 @@ class Cell {
         this.col = col;         // Cell column index
         this.element = element; // Reference to its HTML div
         this.alive = false;     // Default state is dead
+        this.population_count = 0;
 
-        // Clicking toggles alive/dead before "start" or "next"
+        // Clicking toggles alive/dead before "start" or "next" 
         element.addEventListener("click", () => this.toggle());
     };
 
@@ -45,6 +47,7 @@ class Cell {
     toggle() {
         this.alive = !this.alive;
         this.render();
+        updatePopulation(); // Update population count on click.
     };
 
     // Explicitly set to dead/alive
@@ -90,6 +93,8 @@ function createGrid() {
         // Store all cell objects in that row
         grid.push(rowArray);
     }
+
+    updatePopulation(); // Reset population count to 0 after creation.
 }
 
 //----------------------------------------------------------------
@@ -162,6 +167,7 @@ function nextGen() {
     // Update generation counter
     generation++;
     counter.textContent = `Counter: ${generation}`;
+    updatePopulation(); // Update population count every new step of the game.
 }
 
 // Save initial pattern the user made before running the game.
@@ -169,6 +175,21 @@ function saveInitialState() {
     if (initialState === null) {
         initialState = grid.map(row => row.map(cell => cell.alive));
     }
+}
+
+// Check each cell to update population count.
+function updatePopulation() {
+    let popCount = 0;
+
+    for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+            if (grid[row][col].alive) {
+                popCount++
+            }
+        }
+    }
+
+    population.textContent = `Population: ${popCount}`;
 }
 
 //----------------------------------------------------------------
@@ -220,6 +241,8 @@ clearBtn.addEventListener("click", () => {
         clearInterval(intervalID);
         startBtn.textContent = "START";
     }
+
+    updatePopulation(); // Reset population count to 0.
 });
 
 // Reset button setup. Restores first pattern user created
@@ -240,6 +263,8 @@ resetBtn.addEventListener("click", () => {
     // Reset generation counter
     generation = 0;
     counter.textContent = "Counter: 0";
+
+    updatePopulation(); // Reset population count to initial setup.
 });
 
 //----------------------------------------------------------------
