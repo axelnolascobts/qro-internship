@@ -7,6 +7,7 @@ let ROWS = 20;
 let grid = createEmptyGrid();
 let initialGrid = null;
 let isRunning = false;
+let animationId = null;
 let generation = 0;
 let speed = 500;
 
