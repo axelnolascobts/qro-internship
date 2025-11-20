@@ -1,0 +1,97 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: #404040;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    background-color: #3663a8;
+    color: #b4c8e7;
+    padding-left: 15px;
+    width: auto;
+    height: 10vh;
+}
+
+.title {
+    font-family: HandelGothic, Trebuchet MS, sans-serif;
+    font-size: 30px;
+    white-space: nowrap;
+}
+
+.grid_wrapper {
+    position: relative;
+    background-color: #404040;
+    padding: 10px;
+    height: 70vh;
+    width: 80vw;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.the_grid {
+    display: grid;
+    background: transparent;
+    height: 100%;
+    width: 100%;
+
+    grid-template-rows: repeat(20, 1fr);
+    grid-template-columns: repeat(20, 1fr);
+}
+
+.cell {
+    background-color: rgba(128, 128, 128, 0.7);
+    border: 1px solid lightgray;
+    cursor: pointer;
+    height: auto;
+    width: auto;
+}
+
+.cell.alive {
+    background-color: yellow;
+}
+
+.slider {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+
+    background-color: rgb(100, 100, 100);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 18px;
+    pointer-events: none;
+}
+
+.menu {
+    background-color: rgb(100, 100, 100);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 20vh;
+}
+
+.buttons button {
+    margin-right: 10px;
+    padding: 12px 18px;
+    background-color: #2A4E97;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 30px;
+}
+
+#start {
+    font-size: 50px;
+}
