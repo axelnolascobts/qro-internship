@@ -9,6 +9,7 @@ let initialGrid = null;
 let isRunning = false;
 let animationId = null;
 let generation = 0;
+let population = 0;
 let speed = 500;
 
 const startBtn = document.getElementById("startBtn");
@@ -19,7 +20,8 @@ const resetBtn = document.getElementById("resetBtn");
 
 const speedSlider = document.getElementById("speedSlider");
 const speedValue = document.getElementById("speedValue");
-const generationCount = document.getElementById("generation")
+const generationCount = document.getElementById("generation");
+const populationCount = document.getElementById("population");
 
 function createEmptyGrid() {
   return Array(ROWS).fill(null).map(() => Array(COLS).fill(0));
@@ -61,7 +63,13 @@ function updateGrid() {
       }
     }
   }
+  populationCount.textContent = updatePop();
   return;
+}
+
+function updatePop() {
+  const aliveCells = gridContainer.querySelectorAll(".alive");
+  return aliveCells.length;
 }
 
 function countNeighbors(grid, x, y, rows, cols) {
@@ -96,6 +104,7 @@ function nextGeneration() {
   }
   grid = newGrid;
   generationCount.textContent = generation++;
+  populationCount.textContent = updatePop();
   return;
 }
 
@@ -134,6 +143,7 @@ function start() {
   if (!isRunning) {
     if (initialGrid === null) {
       initialGrid = grid.map(row => [...row]);
+      populationCount.textContent = updatePop();
     }
     isRunning = true;
     updateButtons();
@@ -167,8 +177,10 @@ function clear() {
   grid = createEmptyGrid();
   initialGrid = null;
   generation = 0;
+  population = 0;
   updateGrid();
   generationCount.textContent = generation;
+  populationCount.textContent = population;
   updateButtons();
   return;
 }
@@ -179,6 +191,7 @@ function reset() {
   generation = 0;
   updateGrid();
   generationCount.textContent = generation;
+  populationCount.textContent = updatePop();
   updateButtons();
   return;
 }
