@@ -7,7 +7,6 @@ let ROWS = 20;
 let grid = createEmptyGrid();
 let initialGrid = null;
 let isRunning = false;
-let animationId = null;
 let generation = 0;
 let speed = 500;
 
@@ -151,6 +150,17 @@ function stop() {
   return;
 }
 
+function next() {
+  if (initialGrid === null) {
+    initialGrid = grid.map(row => [...row]);
+  }
+  nextGeneration();
+  updateGrid();
+  generationCount.textContent = generation;
+  updateButtons();
+  return;
+}
+
 function clear() {
   stop();
   grid = createEmptyGrid();
@@ -164,27 +174,17 @@ function clear() {
 
 function reset() {
   stop();
-  if (initialGrid !== null) {
-    grid = initialGrid.map(row => [...row]);
-    generation = 0;
-    updateGrid();
-    generationCount.textContent = generation;
-  }
+  grid = initialGrid.map(row => [...row]);
+  generation = 0;
+  updateGrid();
+  generationCount.textContent = generation;
   updateButtons();
   return;
 }
 
 startBtn.addEventListener("click", start);
 stopBtn.addEventListener("click", stop);
-nextBtn.addEventListener("click", () => {
-  if (initialGrid === null) {
-    initialGrid = grid.map(row => [...row]);
-  }
-  nextGeneration();
-  updateGrid();
-  generationCount.textContent = generation;
-  updateButtons();
-});
+nextBtn.addEventListener("click", next);
 clearBtn.addEventListener("click", clear);
 resetBtn.addEventListener("click", reset);
 
@@ -194,5 +194,4 @@ speedSlider.addEventListener("input", (e) => {
 });
 
 initGrid();
-generationCount.textContent = generation;
 updateButtons();
