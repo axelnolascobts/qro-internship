@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Async Tests</title>
+    <style>
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        button {
+            padding: 15px;
+            font-size: 14px;
+            cursor: pointer;
+            background-color: slategray;
+            color: white;
+            border: none;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="buttons">
+        <button onclick="loadScript('xmlHttp.js')">1. XMLHttpRequest</button>
+        <button onclick="loadScript('fetch.js')">2. Fetch with .then()</button>
+        <button onclick="loadScript('promise.js')">3. Promise Function</button>
+        <button onclick="loadScript('async.js')">4. Async/Await</button>
+        <button onclick="loadScript('part2.js')">Part 2</button>
+    </div>
+
+    <script>
+        function loadScript(filename) {
+            const oldScript = document.getElementById('current-script');
+            if (oldScript) {
+                oldScript.remove();
+            }
+
+            console.clear();
+            console.log(`%c=== Loading: ${filename} ===`, 'font-size: 16px; font-weight: bold;');
+
+            const script = document.createElement('script');
+            script.id = 'current-script';
+            script.src = filename;
+
+            document.body.appendChild(script);
+        }
+    </script>
+</body>
+
+</html>
