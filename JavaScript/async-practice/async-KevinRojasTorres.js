@@ -107,10 +107,11 @@ fetch("https://jsonplaceholder.typicode.com/posts")
 // Q2 - Solution 2
 fetch("https://jsonplaceholder.typicode.com/posts")
     .then(response => {
-        return response.json();
+        // parse JSON here, then log inside the same callback
+        response.json().then(posts => console.log("Posts Sol2", posts));
     })
-    .then(data => console.log("Posts Sol2:", data))
-    .catch(error => console.error("Error:", error.message));
+
+    .catch(error => console.log("Error:", error));
 
 // Q3 - Async of Solution 1
 async function getPosts() {
