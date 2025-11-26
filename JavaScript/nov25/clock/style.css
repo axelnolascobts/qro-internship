@@ -1,0 +1,51 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: slategray;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px;
+    background-color: white;
+    border-radius: 10px;
+}
+
+#clock {
+    font-size: 5rem;
+    font-family: monospace;
+}
+
+#clock.hidden {
+    display: none;
+}
+
+#button-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-width: 500px;
+}
+
+button {
+    padding: 30px;
+    border-radius: 10px;
+    border: 2px solid black;
+    cursor: pointer;
+    font-weight: 800;
+}
+
+button:disabled {
+    cursor: not-allowed;
+}
