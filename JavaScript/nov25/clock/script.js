@@ -26,7 +26,7 @@ function startClock() {
 function stopClock() {
     clearInterval(clockInterval);
     clockInterval = null;
-    clockDisplay.classList.add("hidden");
+    // clockDisplay.classList.add("hidden");
 
     startClockBtn.disabled = false;
     stopClockBtn.disabled = true;
