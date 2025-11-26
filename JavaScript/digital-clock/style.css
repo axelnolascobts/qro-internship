@@ -1,0 +1,32 @@
+body {
+    background-color: lightgray;
+    text-align: center;
+}
+
+main {
+    display: flex;
+    background-color: lightblue;
+    flex-direction: column;
+}
+
+#clock {
+    font-size: 2rem;
+    font-weight: bold;
+    background-color: white;
+    display: inline-block;
+    width: fit-content;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hidden {
+    display: none;
+}
+
+.buttons {
+    margin-right: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+}
