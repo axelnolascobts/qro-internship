@@ -1,0 +1,16 @@
+{
+  "name": "battleship",
+  "version": "1.0.0",
+  "description": "",
+  "main": "battleship.js",
+  "scripts": {
+    "test": "NODE_OPTIONS='--no-experimental-webstorage' jest --verbose"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "jest": "^30.2.0"
+  }
+}
