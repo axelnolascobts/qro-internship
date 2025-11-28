@@ -1,0 +1,13 @@
+{
+    "name": "test-nov28",
+    "version": "1.0.0",
+    "description": "",
+    "main": "battleship.js",
+    "scripts": {
+        "test": "jest --verbose"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs"
+}
