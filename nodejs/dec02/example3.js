@@ -9,7 +9,7 @@ const server = http.createServer((req, res) => {
   fs.stat(VIDEO_FILE, (err, stats) => {
     if (err) {
       if (err.code === "ENOENT") {
-        res.writeHead(404, { "Conent-Type": "text/plain" });
+        res.writeHead(404, { "Content-Type": "text/plain" });
         res.end("Video not found");
       } else {
         res.writeHead(500, { "Content-Type": "text/plain" });
