@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Chat</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="chat-container">
+    <!-- Header -->
+    <header class="chat-header">
+      <h1>Live Chat</h1>
+      <div class="header-info">
+        <span class="user-count" id="userCount">0 users</span>
+        <span class="current-user" id="currentUser"></span>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="chat-main">
+      <!-- Login Screen -->
+      <section class="login-screen" id="loginContainer">
+        <div class="login-card">
+          <h2>Welcome</h2>
+          <form id="loginForm">
+            <input type="text" id="usernameInput" class="input-field" placeholder="Enter your username" maxlength="20"
+              required autocomplete="username" aria-label="Username">
+            <button type="submit" class="btn btn-primary" id="joinBtn">Join Chat</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Chat Screen -->
+      <section class="chat-screen" id="chatContent">
+        <!-- Room Selector -->
+        <nav class="room-nav">
+          <button class="room-btn active" data-room="general">General</button>
+          <button class="room-btn" data-room="random">Random</button>
+        </nav>
+
+        <!-- Messages Area -->
+        <div class="messages-area" id="messagesContainer"></div>
+
+        <!-- Typing Indicator -->
+        <div class="typing-indicator" id="typingIndicator"></div>
+
+        <!-- Message Input -->
+        <div class="message-input-area">
+          <form id="messageForm" class="message-form">
+            <button type="button" class="btn-emoji" id="emojiBtn" aria-label="Add emoji">😊</button>
+            <input type="text" id="messageInput" class="input-field input-message" placeholder="Type your message..."
+              maxlength="200" required autocomplete="off" aria-label="Message">
+            <button type="submit" class="btn btn-send" id="sendBtn">Send</button>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="client.js"></script>
+</body>
+
+</html>

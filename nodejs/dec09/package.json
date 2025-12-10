@@ -1,0 +1,25 @@
+{
+  "name": "dec09",
+  "version": "1.0.0",
+  "description": "Real-time chat application with Node.js, Express and Socket.IO",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "keywords": [
+    "chat",
+    "socket.io",
+    "real-time",
+    "nodejs"
+  ],
+  "author": "Student",
+  "license": "MIT"
+}
