@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - ShopHub</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">ShopHub</a>
+            <button class="hamburger"><span></span><span></span><span></span></button>
+            <ul class="nav-menu">
+                <li><a href="/">Home</a></li>
+                <li><a href="/catalog">Catalog</a></li>
+                <li><a href="/cart" class="cart-badge">Cart <span class="badge">0</span></a></li>
+                <li><a href="/profile">Profile</a></li>
+                <li><button class="theme-toggle">🌙</button></li>
+                <li><button id="logout-btn" class="btn btn-outline" style="display: none;"
+                        onclick="logout()">Logout</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container" style="padding: 2rem 0;">
+        <h1 class="mb-4">Checkout</h1>
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+            <div class="card">
+                <form id="checkout-form">
+                    <h2 class="mb-3">Shipping Information</h2>
+                    <div class="form-group">
+                        <label class="form-label">Full Address *</label>
+                        <textarea id="shippingAddress" class="form-input" rows="3" required></textarea>
+                    </div>
+
+                    <h2 class="mb-3 mt-4">Payment Information</h2>
+                    <div class="form-group">
+                        <label class="form-label">Card Holder Name *</label>
+                        <input type="text" id="cardHolder" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Card Number *</label>
+                        <input type="text" id="cardNumber" class="form-input" maxlength="16" required>
+                    </div>
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Expiry (MM/YY) *</label>
+                            <input type="text" id="cardExpiry" class="form-input" placeholder="12/25" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">CVV *</label>
+                            <input type="text" id="cardCVV" class="form-input" maxlength="3" required>
+                        </div>
+                    </div>
+                    <div id="error-message"></div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Place Order</button>
+                </form>
+            </div>
+
+            <div>
+                <div class="card" style="position: sticky; top: 100px;">
+                    <h2 class="mb-3">Order Summary</h2>
+                    <div id="order-items" class="mb-3"></div>
+                    <div style="border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                        <div
+                            style="display: flex; justify-content: space-between; font-size: 1.25rem; font-weight: bold;">
+                            <span>Total:</span>
+                            <span id="total" style="color: var(--primary-color);">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script>
+        if (!isAuthenticated()) window.location.href = '/login';
+
+        const cart = getCart();
+        if (cart.length === 0) window.location.href = '/cart';
+
+        document.getElementById('order-items').innerHTML = cart.map(item => `
+      <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+        <span>${item.name} × ${item.quantity}</span>
+        <span>${formatCurrency(item.price * item.quantity)}</span>
+      </div>
+    `).join('');
+
+        document.getElementById('total').textContent = formatCurrency(getCartTotal());
+
+        document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errorDiv = document.getElementById('error-message');
+
+            const orderData = {
+                items: cart.map(item => ({ productId: item.productId, quantity: item.quantity })),
+                shippingAddress: document.getElementById('shippingAddress').value,
+                cardNumber: document.getElementById('cardNumber').value,
+                cardHolder: document.getElementById('cardHolder').value,
+                cardExpiry: document.getElementById('cardExpiry').value,
+                cardCVV: document.getElementById('cardCVV').value
+            };
+
+            const response = await apiRequest('/orders', {
+                method: 'POST',
+                body: JSON.stringify(orderData)
+            });
+
+            if (response.ok && response.data.success) {
+                clearCart();
+                showNotification('Order placed successfully!', 'success');
+                setTimeout(() => window.location.href = '/profile', 1500);
+            } else {
+                errorDiv.innerHTML = `<div class="alert alert-error">${response.data.message}</div>`;
+            }
+        });
+    </script>
+    <style>
+        @media (max-width: 768px) {
+            .container>div {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</body>
+
+</html>

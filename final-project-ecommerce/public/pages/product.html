@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product - ShopHub</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">ShopHub</a>
+            <button class="hamburger"><span></span><span></span><span></span></button>
+            <ul class="nav-menu">
+                <li><a href="/">Home</a></li>
+                <li><a href="/catalog">Catalog</a></li>
+                <li><a href="/cart" class="cart-badge">Cart <span class="badge">0</span></a></li>
+                <li><a href="/profile">Profile</a></li>
+                <li><a href="/seller" style="display: none;">Seller</a></li>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
+                <li><button class="theme-toggle">🌙</button></li>
+                <li><button id="logout-btn" class="btn btn-outline" style="display: none;"
+                        onclick="logout()">Logout</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container" style="padding: 2rem 0;">
+        <div id="product-container">
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script>
+        const productId = window.location.pathname.split('/').pop();
+
+        async function loadProduct() {
+            const container = document.getElementById('product-container');
+
+            try {
+                const response = await apiRequest(`/products/${productId}`);
+
+                if (response.ok && response.data.success) {
+                    const product = response.data.product;
+
+                    container.innerHTML = `
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+              <div>
+                <img src="${product.image}" alt="${product.name}" style="width: 100%; border-radius: 1rem; box-shadow: 0 4px 12px var(--shadow-lg);">
+              </div>
+              <div>
+                <h1 style="margin-bottom: 1rem;">${product.name}</h1>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.875rem;">Category: ${product.category}</p>
+                <p style="font-size: 2rem; font-weight: bold; color: var(--primary-color); margin-bottom: 1rem;">${formatCurrency(product.price)}</p>
+                <p style="margin-bottom: 1.5rem; line-height: 1.8;">${product.description}</p>
+                <p style="margin-bottom: 2rem; color: ${product.stock > 0 ? 'var(--success)' : 'var(--error)'}; font-weight: 600;">
+                  ${product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                </p>
+                <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 2rem;">
+                  <label style="font-weight: 600;">Quantity:</label>
+                  <input type="number" id="quantity" value="1" min="1" max="${product.stock}" style="width: 80px; padding: 0.5rem; border: 2px solid var(--border-color); border-radius: 0.5rem;">
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                  <button class="btn btn-primary" onclick="addProductToCart()" ${product.stock <= 0 ? 'disabled' : ''} style="flex: 1;">
+                    Add to Cart
+                  </button>
+                  <a href="/catalog" class="btn btn-outline" style="flex: 1;">Back to Catalog</a>
+                </div>
+              </div>
+            </div>
+          `;
+                } else {
+                    container.innerHTML = '<p>Product not found</p>';
+                }
+            } catch (error) {
+                container.innerHTML = '<p>Error loading product</p>';
+            }
+        }
+
+        async function addProductToCart() {
+            const response = await apiRequest(`/products/${productId}`);
+            if (response.ok && response.data.success) {
+                const product = response.data.product;
+                const quantity = parseInt(document.getElementById('quantity').value);
+                addToCart(product, quantity);
+            }
+        }
+
+        loadProduct();
+    </script>
+
+    <style>
+        @media (max-width: 768px) {
+            #product-container>div>div {
+                grid-template-columns: 1fr !important;
+                gap: 1.5rem !important;
+            }
+        }
+    </style>
+</body>
+
+</html>

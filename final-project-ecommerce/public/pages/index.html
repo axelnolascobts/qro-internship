@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Store</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">ShopHub</a>
+
+            <button class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="nav-menu">
+                <li><a href="/">Home</a></li>
+                <li><a href="/catalog">Catalog</a></li>
+                <li><a href="/cart" class="cart-badge">Cart <span class="badge">0</span></a></li>
+                <li><a href="/profile">Profile</a></li>
+                <li><a href="/seller" style="display: none;">Seller</a></li>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
+                <li><button class="theme-toggle">🌙</button></li>
+                <li><button id="logout-btn" class="btn btn-outline" style="display: none;"
+                        onclick="logout()">Logout</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero"
+        style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); padding: 4rem 0; text-align: center; color: white;">
+        <div class="container">
+            <h1 style="font-size: 3rem; margin-bottom: 1rem;">Welcome to ShopHub</h1>
+            <p style="font-size: 1.25rem; margin-bottom: 2rem;">Discover amazing products at great prices</p>
+            <a href="/catalog" class="btn btn-secondary" style="font-size: 1.25rem;">Shop Now</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="container" style="padding: 4rem 0;">
+        <h2 class="text-center mb-4" style="font-size: 2.5rem;">Why Shop With Us</h2>
+        <div class="grid grid-3">
+            <div class="card text-center">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🚚</div>
+                <h3>Fast Delivery</h3>
+                <p>Get your products delivered quickly and safely</p>
+            </div>
+            <div class="card text-center">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">💳</div>
+                <h3>Secure Payment</h3>
+                <p>Your payment information is always protected</p>
+            </div>
+            <div class="card text-center">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">💬</div>
+                <h3>24/7 Support</h3>
+                <p>Our support team is always here to help</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="container" style="padding: 4rem 0;">
+        <h2 class="text-center mb-4" style="font-size: 2.5rem;">Featured Products</h2>
+        <div id="featured-products" class="grid grid-4">
+            <div class="spinner"></div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="/catalog" class="btn btn-primary">View All Products</a>
+        </div>
+    </section>
+
+    <script src="/js/common.js"></script>
+    <script>
+        async function loadFeaturedProducts() {
+            const container = document.getElementById('featured-products');
+
+            try {
+                const response = await apiRequest('/products?limit=4');
+
+                if (response.ok && response.data.success) {
+                    const products = response.data.products;
+
+                    container.innerHTML = products.map(product => `
+            <div class="card">
+              <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 0.5rem; margin-bottom: 1rem;">
+              <h3 style="margin-bottom: 0.5rem;">${product.name}</h3>
+              <p style="color: var(--text-secondary); margin-bottom: 1rem;">${product.description.substring(0, 60)}...</p>
+              <div class="flex-between" style="align-items: center;">
+                <span style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color);">${formatCurrency(product.price)}</span>
+                <a href="/product/${product.id}" class="btn btn-primary">View</a>
+              </div>
+            </div>
+          `).join('');
+                } else {
+                    container.innerHTML = '<p>Failed to load products</p>';
+                }
+            } catch (error) {
+                container.innerHTML = '<p>Error loading products</p>';
+            }
+        }
+
+        loadFeaturedProducts();
+    </script>
+</body>
+
+</html>

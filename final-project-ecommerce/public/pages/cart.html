@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - ShopHub</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">ShopHub</a>
+            <button class="hamburger"><span></span><span></span><span></span></button>
+            <ul class="nav-menu">
+                <li><a href="/">Home</a></li>
+                <li><a href="/catalog">Catalog</a></li>
+                <li><a href="/cart" class="cart-badge">Cart <span class="badge">0</span></a></li>
+                <li><a href="/profile">Profile</a></li>
+                <li><a href="/seller" style="display: none;">Seller</a></li>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
+                <li><button class="theme-toggle">🌙</button></li>
+                <li><button id="logout-btn" class="btn btn-outline" style="display: none;"
+                        onclick="logout()">Logout</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container" style="padding: 2rem 0;">
+        <h1 class="mb-4">Shopping Cart</h1>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+            <div id="cart-items"></div>
+            <div>
+                <div class="card" style="position: sticky; top: 100px;">
+                    <h2 class="mb-3">Order Summary</h2>
+                    <div
+                        style="display: flex; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);">
+                        <span>Subtotal:</span>
+                        <span id="subtotal" style="font-weight: 600;">$0.00</span>
+                    </div>
+                    <div
+                        style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: bold;">
+                        <span>Total:</span>
+                        <span id="total" style="color: var(--primary-color);">$0.00</span>
+                    </div>
+                    <a href="/checkout" class="btn btn-primary" style="width: 100%; display: block; text-align: center;"
+                        id="checkout-btn">
+                        Proceed to Checkout
+                    </a>
+                    <a href="/catalog" class="btn btn-outline"
+                        style="width: 100%; display: block; text-align: center; margin-top: 1rem;">
+                        Continue Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script>
+        function renderCart() {
+            const cart = getCart();
+            const container = document.getElementById('cart-items');
+            const checkoutBtn = document.getElementById('checkout-btn');
+
+            if (cart.length === 0) {
+                container.innerHTML = '<div class="card"><p>Your cart is empty. <a href="/catalog" style="color: var(--primary-color);">Continue shopping</a></p></div>';
+                checkoutBtn.style.display = 'none';
+            } else {
+                container.innerHTML = cart.map(item => `
+          <div class="card mb-2">
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              <img src="${item.image}" alt="${item.name}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 0.5rem;">
+              <div style="flex: 1;">
+                <h3 style="margin-bottom: 0.5rem;">${item.name}</h3>
+                <p style="color: var(--primary-color); font-weight: 600; margin-bottom: 0.5rem;">${formatCurrency(item.price)}</p>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                  <input type="number" value="${item.quantity}" min="1" 
+                    onchange="updateCartItemQuantity('${item.productId}', this.value)"
+                    style="width: 70px; padding: 0.5rem; border: 2px solid var(--border-color); border-radius: 0.5rem;">
+                  <span style="color: var(--text-secondary);">× ${formatCurrency(item.price)} = ${formatCurrency(item.price * item.quantity)}</span>
+                </div>
+              </div>
+              <button onclick="removeFromCart('${item.productId}')" class="btn btn-danger">Remove</button>
+            </div>
+          </div>
+        `).join('');
+                checkoutBtn.style.display = 'block';
+            }
+
+            updateTotals();
+        }
+
+        function updateTotals() {
+            const total = getCartTotal();
+            document.getElementById('subtotal').textContent = formatCurrency(total);
+            document.getElementById('total').textContent = formatCurrency(total);
+        }
+
+        window.updateCartItemQuantity = (productId, quantity) => {
+            const cart = getCart();
+            const item = cart.find(item => item.productId === productId);
+
+            if (item) {
+                if (quantity <= 0) {
+                    const updatedCart = cart.filter(item => item.productId !== productId);
+                    setCart(updatedCart);
+                } else {
+                    item.quantity = parseInt(quantity);
+                    setCart(cart);
+                }
+            }
+            renderCart();
+        };
+
+        const originalRemoveFromCart = removeFromCart;
+        window.removeFromCart = (productId) => {
+            originalRemoveFromCart(productId);
+            renderCart();
+        };
+
+        renderCart();
+    </script>
+
+    <style>
+        @media (max-width: 768px) {
+            .container>div {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</body>
+
+</html>

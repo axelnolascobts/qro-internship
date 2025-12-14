@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalog - ShopHub</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">ShopHub</a>
+
+            <button class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="nav-menu">
+                <li><a href="/">Home</a></li>
+                <li><a href="/catalog">Catalog</a></li>
+                <li><a href="/cart" class="cart-badge">Cart <span class="badge">0</span></a></li>
+                <li><a href="/profile">Profile</a></li>
+                <li><a href="/seller" style="display: none;">Seller</a></li>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
+                <li><button class="theme-toggle">🌙</button></li>
+                <li><button id="logout-btn" class="btn btn-outline" style="display: none;"
+                        onclick="logout()">Logout</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container" style="padding: 2rem 0;">
+        <h1 class="mb-4">Product Catalog</h1>
+
+        <!-- Filters Section -->
+        <div class="card mb-4">
+            <div class="grid grid-4 gap-2">
+                <div class="form-group">
+                    <label class="form-label">Search</label>
+                    <input type="text" id="search" class="form-input" placeholder="Search products...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select id="category" class="form-input">
+                        <option value="all">All Categories</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Clothing">Clothing</option>
+                        <option value="Books">Books</option>
+                        <option value="Home">Home</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Min Price</label>
+                    <input type="number" id="minPrice" class="form-input" placeholder="$0">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Max Price</label>
+                    <input type="number" id="maxPrice" class="form-input" placeholder="$10000">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Sort By</label>
+                    <select id="sort" class="form-input">
+                        <option value="date-desc">Newest First</option>
+                        <option value="date-asc">Oldest First</option>
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                        <option value="name-asc">Name: A-Z</option>
+                        <option value="name-desc">Name: Z-A</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="display: flex; align-items: flex-end;">
+                    <button id="filter-btn" class="btn btn-primary" style="width: 100%;">Apply Filters</button>
+                </div>
+
+                <div class="form-group" style="display: flex; align-items: flex-end;">
+                    <button id="clear-btn" class="btn btn-outline" style="width: 100%;">Clear</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="products-container" class="grid grid-4 mb-4">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- Pagination -->
+        <div id="pagination" class="flex-center gap-2">
+        </div>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script>
+        let currentPage = 1;
+        const limit = 12;
+
+        async function loadProducts() {
+            const search = document.getElementById('search').value;
+            const category = document.getElementById('category').value;
+            const minPrice = document.getElementById('minPrice').value;
+            const maxPrice = document.getElementById('maxPrice').value;
+            const sort = document.getElementById('sort').value;
+
+            const params = new URLSearchParams({
+                page: currentPage,
+                limit,
+                sort,
+            });
+
+            if (search) params.append('search', search);
+            if (category !== 'all') params.append('category', category);
+            if (minPrice) params.append('minPrice', minPrice);
+            if (maxPrice) params.append('maxPrice', maxPrice);
+
+            const container = document.getElementById('products-container');
+            container.innerHTML = '<div class="spinner"></div>';
+
+            try {
+                const response = await apiRequest(`/products?${params}`);
+
+                if (response.ok && response.data.success) {
+                    const { products, pagination } = response.data;
+
+                    if (products.length === 0) {
+                        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No products found</p>';
+                    } else {
+                        container.innerHTML = products.map(product => `
+              <div class="card">
+                <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 0.5rem; margin-bottom: 1rem;">
+                <h3 style="margin-bottom: 0.5rem;">${product.name}</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 0.5rem; min-height: 3rem;">${product.description.substring(0, 80)}...</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                  <span style="font-size: 1.25rem; font-weight: bold; color: var(--primary-color);">${formatCurrency(product.price)}</span>
+                  <span style="color: var(--text-secondary); font-size: 0.875rem;">Stock: ${product.stock}</span>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                  <a href="/product/${product.id}" class="btn btn-outline" style="flex: 1; padding: 0.5rem;">View</a>
+                  <button class="btn btn-primary" style="flex: 1; padding: 0.5rem;" onclick="quickAddToCart('${product.id}', '${product.name}', ${product.price}, '${product.image}')">Add</button>
+                </div>
+              </div>
+            `).join('');
+                    }
+
+                    renderPagination(pagination);
+                } else {
+                    container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Failed to load products</p>';
+                }
+            } catch (error) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Error loading products</p>';
+            }
+        }
+
+        function renderPagination(pagination) {
+            const container = document.getElementById('pagination');
+
+            if (pagination.pages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+
+            if (pagination.page > 1) {
+                html += `<button class="btn btn-outline" onclick="changePage(${pagination.page - 1})">Previous</button>`;
+            }
+
+            for (let i = 1; i <= pagination.pages; i++) {
+                if (i === pagination.page) {
+                    html += `<button class="btn btn-primary">${i}</button>`;
+                } else if (i === 1 || i === pagination.pages || (i >= pagination.page - 1 && i <= pagination.page + 1)) {
+                    html += `<button class="btn btn-outline" onclick="changePage(${i})">${i}</button>`;
+                } else if (i === pagination.page - 2 || i === pagination.page + 2) {
+                    html += `<span style="padding: 0.5rem;">...</span>`;
+                }
+            }
+
+            if (pagination.page < pagination.pages) {
+                html += `<button class="btn btn-outline" onclick="changePage(${pagination.page + 1})">Next</button>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            loadProducts();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function quickAddToCart(id, name, price, image) {
+            const product = { id, name, price, image };
+            addToCart(product, 1);
+        }
+
+        // Event listeners
+        document.getElementById('filter-btn').addEventListener('click', () => {
+            currentPage = 1;
+            loadProducts();
+        });
+
+        document.getElementById('clear-btn').addEventListener('click', () => {
+            document.getElementById('search').value = '';
+            document.getElementById('category').value = 'all';
+            document.getElementById('minPrice').value = '';
+            document.getElementById('maxPrice').value = '';
+            document.getElementById('sort').value = 'date-desc';
+            currentPage = 1;
+            loadProducts();
+        });
+
+        // Enter key to search
+        document.getElementById('search').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                currentPage = 1;
+                loadProducts();
+            }
+        });
+
+        // Initial load
+        loadProducts();
+    </script>
+</body>
+
+</html>

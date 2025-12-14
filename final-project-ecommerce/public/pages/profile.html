@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - ShopHub</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">ShopHub</a>
+            <button class="hamburger"><span></span><span></span><span></span></button>
+            <ul class="nav-menu">
+                <li><a href="/">Home</a></li>
+                <li><a href="/catalog">Catalog</a></li>
+                <li><a href="/cart" class="cart-badge">Cart <span class="badge">0</span></a></li>
+                <li><a href="/profile">Profile</a></li>
+                <li><a href="/seller" style="display: none;">Seller</a></li>
+                <li><button class="theme-toggle">🌙</button></li>
+                <li><button id="logout-btn" class="btn btn-outline" style="display: none;"
+                        onclick="logout()">Logout</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container" style="padding: 2rem 0;">
+        <h1 class="mb-4">My Profile</h1>
+
+        <div class="card mb-4">
+            <h2 class="mb-3">User Information</h2>
+            <div id="user-info"></div>
+        </div>
+
+        <div class="card">
+            <h2 class="mb-3">My Orders</h2>
+            <div id="orders-list"></div>
+        </div>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script>
+        if (!isAuthenticated()) window.location.href = '/login';
+
+        const user = getUserData();
+        document.getElementById('user-info').innerHTML = `
+      <p><strong>Name:</strong> ${user.name} ${user.lastname}</p>
+      <p><strong>Email:</strong> ${user.email}</p>
+      <p><strong>Role:</strong> ${user.role}</p>
+      ${user.address ? `<p><strong>Address:</strong> ${user.address}</p>` : ''}
+    `;
+
+        async function loadOrders() {
+            const container = document.getElementById('orders-list');
+            container.innerHTML = '<div class="spinner"></div>';
+
+            const response = await apiRequest('/orders');
+
+            if (response.ok && response.data.success) {
+                const orders = response.data.orders;
+
+                if (orders.length === 0) {
+                    container.innerHTML = '<p>No orders yet. <a href="/catalog" style="color: var(--primary-color);">Start shopping</a></p>';
+                } else {
+                    container.innerHTML = orders.map(order => `
+            <div class="card mb-2" style="background: var(--background);">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                <span><strong>Order #${order.id}</strong></span>
+                <span style="color: var(--text-secondary);">${formatDate(order.createdAt)}</span>
+              </div>
+              <div style="margin-bottom: 1rem;">
+                ${order.items.map(item => `
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>${item.name} × ${item.quantity}</span>
+                    <span>${formatCurrency(item.subtotal)}</span>
+                  </div>
+                `).join('')}
+              </div>
+              <div style="display: flex; justify-content: space-between; font-weight: bold; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                <span>Total:</span>
+                <span style="color: var(--primary-color);">${formatCurrency(order.total)}</span>
+              </div>
+            </div>
+          `).join('');
+                }
+            } else {
+                container.innerHTML = '<p>Failed to load orders</p>';
+            }
+        }
+
+        loadOrders();
+    </script>
+</body>
+
+</html>

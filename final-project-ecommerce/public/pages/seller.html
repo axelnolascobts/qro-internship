@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Dashboard - ShopHub</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">ShopHub</a>
+            <button class="hamburger"><span></span><span></span><span></span></button>
+            <ul class="nav-menu">
+                <li><a href="/">Home</a></li>
+                <li><a href="/catalog">Catalog</a></li>
+                <li><a href="/cart" class="cart-badge">Cart <span class="badge">0</span></a></li>
+                <li><a href="/profile">Profile</a></li>
+                <li><a href="/seller">Seller</a></li>
+                <li><button class="theme-toggle">🌙</button></li>
+                <li><button id="logout-btn" class="btn btn-outline" style="display: none;"
+                        onclick="logout()">Logout</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container" style="padding: 2rem 0;">
+        <h1 class="mb-4">Seller Dashboard</h1>
+
+        <div class="card mb-4">
+            <h2 class="mb-3">Add New Product</h2>
+            <form id="product-form">
+                <div class="grid grid-2 gap-2">
+                    <div class="form-group">
+                        <label class="form-label">Name *</label>
+                        <input type="text" id="name" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Category *</label>
+                        <input type="text" id="category" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description *</label>
+                    <textarea id="description" class="form-input" rows="3" required></textarea>
+                </div>
+                <div class="grid grid-3 gap-2">
+                    <div class="form-group">
+                        <label class="form-label">Price *</label>
+                        <input type="number" id="price" class="form-input" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Stock *</label>
+                        <input type="number" id="stock" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Image URL</label>
+                        <input type="text" id="image" class="form-input">
+                    </div>
+                </div>
+                <div id="form-message"></div>
+                <button type="submit" class="btn btn-primary">Add Product</button>
+                <button type="button" class="btn btn-outline" onclick="resetForm()">Cancel</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2 class="mb-3">My Products</h2>
+            <div id="products-list"></div>
+        </div>
+    </div>
+
+    <div id="edit-modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto;">
+        <div
+            style="max-width: 600px; margin: 2rem auto; background: var(--surface); padding: 2rem; border-radius: 1rem;">
+            <h2 class="mb-3">Edit Product</h2>
+            <form id="edit-form">
+                <input type="hidden" id="edit-id">
+                <div class="form-group">
+                    <label class="form-label">Name</label>
+                    <input type="text" id="edit-name" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="edit-description" class="form-input" rows="3"></textarea>
+                </div>
+                <div class="grid grid-2 gap-2">
+                    <div class="form-group">
+                        <label class="form-label">Price</label>
+                        <input type="number" id="edit-price" class="form-input" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Stock</label>
+                        <input type="number" id="edit-stock" class="form-input">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <input type="text" id="edit-category" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Image URL</label>
+                    <input type="text" id="edit-image" class="form-input">
+                </div>
+                <button type="submit" class="btn btn-primary">Update</button>
+                <button type="button" class="btn btn-outline" onclick="closeEditModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script>
+        if (!isAuthenticated()) window.location.href = '/login';
+        const user = getUserData();
+        if (user.role !== 'seller' && user.role !== 'admin') {
+            showNotification('Access denied. Seller role required.', 'error');
+            setTimeout(() => window.location.href = '/', 2000);
+        }
+
+        document.getElementById('product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = {
+                name: document.getElementById('name').value,
+                description: document.getElementById('description').value,
+                price: parseFloat(document.getElementById('price').value),
+                stock: parseInt(document.getElementById('stock').value),
+                category: document.getElementById('category').value,
+                image: document.getElementById('image').value || 'https://via.placeholder.com/400'
+            };
+
+            const response = await apiRequest('/products', {
+                method: 'POST',
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok && response.data.success) {
+                showNotification('Product added successfully!', 'success');
+                resetForm();
+                loadProducts();
+            } else {
+                document.getElementById('form-message').innerHTML = `<div class="alert alert-error">${response.data.message}</div>`;
+            }
+        });
+
+        async function loadProducts() {
+            const container = document.getElementById('products-list');
+            container.innerHTML = '<div class="spinner"></div>';
+
+            const response = await apiRequest('/products?limit=100');
+
+            if (response.ok && response.data.success) {
+                const products = response.data.products;
+                container.innerHTML = products.map(product => `
+          <div class="card mb-2" style="background: var(--background);">
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              <img src="${product.image}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 0.5rem;">
+              <div style="flex: 1;">
+                <h3>${product.name}</h3>
+                <p style="color: var(--text-secondary);">${product.description.substring(0, 60)}...</p>
+                <p><strong>${formatCurrency(product.price)}</strong> | Stock: ${product.stock}</p>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-outline" onclick="editProduct('${product.id}')">Edit</button>
+                <button class="btn btn-danger" onclick="deleteProduct('${product.id}')">Delete</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+            }
+        }
+
+        window.editProduct = async (id) => {
+            const response = await apiRequest(`/products/${id}`);
+            if (response.ok && response.data.success) {
+                const product = response.data.product;
+                document.getElementById('edit-id').value = product.id;
+                document.getElementById('edit-name').value = product.name;
+                document.getElementById('edit-description').value = product.description;
+                document.getElementById('edit-price').value = product.price;
+                document.getElementById('edit-stock').value = product.stock;
+                document.getElementById('edit-category').value = product.category;
+                document.getElementById('edit-image').value = product.image;
+                document.getElementById('edit-modal').style.display = 'block';
+            }
+        };
+
+        window.closeEditModal = () => {
+            document.getElementById('edit-modal').style.display = 'none';
+        };
+
+        document.getElementById('edit-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('edit-id').value;
+            const updates = {
+                name: document.getElementById('edit-name').value,
+                description: document.getElementById('edit-description').value,
+                price: parseFloat(document.getElementById('edit-price').value),
+                stock: parseInt(document.getElementById('edit-stock').value),
+                category: document.getElementById('edit-category').value,
+                image: document.getElementById('edit-image').value
+            };
+
+            const response = await apiRequest(`/products/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify(updates)
+            });
+
+            if (response.ok && response.data.success) {
+                showNotification('Product updated!', 'success');
+                closeEditModal();
+                loadProducts();
+            }
+        });
+
+        window.deleteProduct = async (id) => {
+            if (!confirm('Are you sure you want to delete this product?')) return;
+
+            const response = await apiRequest(`/products/${id}`, { method: 'DELETE' });
+
+            if (response.ok && response.data.success) {
+                showNotification('Product deleted!', 'success');
+                loadProducts();
+            }
+        };
+
+        window.resetForm = () => {
+            document.getElementById('product-form').reset();
+            document.getElementById('form-message').innerHTML = '';
+        };
+
+        loadProducts();
+    </script>
+    <style>
+        @media (max-width: 768px) {
+
+            .grid-2,
+            .grid-3 {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</body>
+
+</html>

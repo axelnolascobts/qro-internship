@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ShopHub</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+    <div class="container" style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+        <div class="card" style="max-width: 450px; width: 100%;">
+            <h1 class="text-center mb-3">Login</h1>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="email">Email</label>
+                    <input type="email" id="email" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" class="form-input" required>
+                </div>
+
+                <div id="error-message"></div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            </form>
+
+            <p class="text-center mt-3">
+                Don't have an account? <a href="/register" style="color: var(--primary-color);">Register here</a>
+            </p>
+
+            <p class="text-center mt-2">
+                <a href="/" style="color: var(--text-secondary);">Back to Home</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script>
+        // Redirect if already logged in
+        if (isAuthenticated()) {
+            window.location.href = '/catalog';
+        }
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error-message');
+
+            errorDiv.innerHTML = '';
+
+            // Validation
+            if (!email || !password) {
+                errorDiv.innerHTML = '<div class="alert alert-error">All fields are required</div>';
+                return;
+            }
+
+            const response = await apiRequest('/auth/login', {
+                method: 'POST',
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (response.ok && response.data.success) {
+                setToken(response.data.token);
+                setUserData(response.data.user);
+                showNotification('Login successful!', 'success');
+                setTimeout(() => {
+                    window.location.href = '/catalog';
+                }, 1000);
+            } else {
+                errorDiv.innerHTML = `<div class="alert alert-error">${response.data.message || 'Login failed'}</div>`;
+            }
+        });
+    </script>
+</body>
+
+</html>

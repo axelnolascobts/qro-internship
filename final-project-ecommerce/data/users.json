@@ -1,0 +1,13 @@
+[
+  {
+    "id": "1765676747583",
+    "name": "Kevin",
+    "lastname": "Roj",
+    "birthdate": "2000-09-11",
+    "email": "example@gmail.com",
+    "address": "123 Main st, concord, CA",
+    "password": "$2a$10$YRQL5T4NSeiXnnTdIQUb5.zXO4ODtrMsK8MQRnJtP0AvR5lrYmvF2",
+    "role": "customer",
+    "createdAt": "2025-12-14T01:45:47.583Z"
+  }
+]
