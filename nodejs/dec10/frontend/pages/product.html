@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details - E-Commerce Store</title>
+  <script>
+    // Prevent flash of unstyled content - load theme immediately
+    (function() {
+      const theme = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="logo">E-Shop</a>
+      <div class="hamburger" id="hamburger">☰</div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/">Home</a></li>
+        <li><a href="/catalog">Catalog</a></li>
+        <li><a href="/cart">Cart (<span id="cartCount">0</span>)</a></li>
+        <li><a href="/chat">Support Chat</a></li>
+        <li id="authLinks"></li>
+        <li><button class="theme-toggle" id="themeToggle">🌙</button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div id="loading" class="loading">Loading product...</div>
+    <div id="productDetail" class="product-detail-container hidden">
+      <div class="product-detail-grid">
+        <div>
+          <img id="productImage" class="product-image">
+        </div>
+        <div>
+          <span id="productCategory" class="product-category"></span>
+          <h1 id="productName" class="product-heading"></h1>
+          <p id="productDescription" class="product-description-text"></p>
+          <div class="product-info-row">
+            <span id="productPrice" class="product-price"></span>
+            <span id="productStock" class="product-stock-info"></span>
+          </div>
+          <div class="quantity-row">
+            <label>Quantity:</label>
+            <input type="number" id="quantity" value="1" min="1" max="999" class="quantity-input">
+          </div>
+          <button id="addToCartBtn" class="btn btn-primary add-to-cart-btn">
+            Add to Cart
+          </button>
+          <div id="message" class="product-message"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/product.js"></script>
+</body>
+</html>

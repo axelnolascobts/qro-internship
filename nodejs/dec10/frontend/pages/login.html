@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - E-Commerce Store</title>
+  <script>
+    // Prevent flash of unstyled content - load theme immediately
+    (function() {
+      const theme = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="logo">E-Shop</a>
+      <div class="hamburger" id="hamburger">☰</div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/">Home</a></li>
+        <li><a href="/catalog">Catalog</a></li>
+        <li><a href="/register">Register</a></li>
+        <li><button class="theme-toggle" id="themeToggle">🌙</button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="form-container">
+    <h1 class="auth-heading">Login</h1>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" required>
+        <span class="error" id="emailError"></span>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" required>
+        <span class="error" id="passwordError"></span>
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-full-width">Login</button>
+      </div>
+      <div class="form-group auth-footer">
+        <p>Don&apos;t have an account? <a href="/register" class="auth-link">Register here</a></p>
+      </div>
+    </form>
+    <div id="message" class="auth-message"></div>
+  </div>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/login.js"></script>
+</body>
+</html>

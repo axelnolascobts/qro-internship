@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller Dashboard - E-Commerce Store</title>
+  <script>
+    // Prevent flash of unstyled content - load theme immediately
+    (function() {
+      const theme = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="logo">E-Shop</a>
+      <div class="hamburger" id="hamburger">☰</div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/">Home</a></li>
+        <li><a href="/catalog">Catalog</a></li>
+        <li><a href="/profile">My Profile</a></li>
+        <li id="authLinks"></li>
+        <li><button class="theme-toggle" id="themeToggle">🌙</button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="seller-header">
+      <h1>Seller Dashboard</h1>
+      <button class="btn btn-primary" id="addProductBtn">Add New Product</button>
+    </div>
+
+    <div id="loading" class="loading hidden">Loading products...</div>
+    <div class="products-grid" id="productsGrid"></div>
+  </div>
+
+  <!-- Product Modal -->
+  <div class="modal" id="productModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add Product</h2>
+        <button class="modal-close" id="closeModal">&times;</button>
+      </div>
+      <form id="productForm">
+        <input type="hidden" id="productId">
+        <div class="form-group">
+          <label for="name">Product Name</label>
+          <input type="text" id="name" required>
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="price">Price</label>
+          <input type="number" id="price" step="0.01" min="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="category">Category</label>
+          <select id="category" required>
+            <option value="">Select Category</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Sports">Sports</option>
+            <option value="Home">Home</option>
+            <option value="Accessories">Accessories</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="stock">Stock</label>
+          <input type="number" id="stock" min="0" required>
+        </div>
+        <div class="form-group">
+          <label for="image">Image URL</label>
+          <input type="url" id="image" placeholder="https://example.com/image.jpg">
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary btn-full-width">Save Product</button>
+        </div>
+      </form>
+      <div id="modalMessage" class="modal-message"></div>
+    </div>
+  </div>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/seller.js"></script>
+</body>
+</html>

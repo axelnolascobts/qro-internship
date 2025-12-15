@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - E-Commerce Store</title>
+  <script>
+    // Prevent flash of unstyled content - load theme immediately
+    (function() {
+      const theme = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="logo">E-Shop</a>
+      <div class="hamburger" id="hamburger">☰</div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/">Home</a></li>
+        <li><a href="/catalog">Catalog</a></li>
+        <li><a href="/cart">Cart (<span id="cartCount">0</span>)</a></li>
+        <li id="authLinks"></li>
+        <li><button class="theme-toggle" id="themeToggle">🌙</button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1 class="checkout-heading">Checkout</h1>
+    
+    <div class="checkout-grid">
+      <div>
+        <div class="form-container checkout-form-container">
+          <h2>Shipping Address</h2>
+          <form id="checkoutForm">
+            <div class="form-group">
+              <label for="street">Street Address</label>
+              <input type="text" id="street" required>
+            </div>
+            <div class="form-group">
+              <label for="city">City</label>
+              <input type="text" id="city" required>
+            </div>
+            <div class="form-group">
+              <label for="state">State</label>
+              <input type="text" id="state" required>
+            </div>
+            <div class="form-group">
+              <label for="zipCode">Zip Code</label>
+              <input type="text" id="zipCode" required>
+            </div>
+            <div class="form-group">
+              <label for="country">Country</label>
+              <input type="text" id="country" required>
+            </div>
+
+            <h2 class="checkout-section-title">Payment Information</h2>
+            <div class="form-group">
+              <label for="cardHolder">Card Holder Name</label>
+              <input type="text" id="cardHolder" required>
+            </div>
+            <div class="form-group">
+              <label for="cardNumber">Card Number</label>
+              <input type="text" id="cardNumber" required pattern="[0-9]{16}" maxlength="16" placeholder="1234567890123456">
+            </div>
+            <div class="payment-grid">
+              <div class="form-group">
+                <label for="expiryDate">Expiry Date</label>
+                <input type="text" id="expiryDate" required placeholder="MM/YY" maxlength="5">
+              </div>
+              <div class="form-group">
+                <label for="cvv">CVV</label>
+                <input type="text" id="cvv" required pattern="[0-9]{3,4}" maxlength="4" placeholder="123">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary place-order-btn" id="placeOrderBtn">
+                Place Order
+              </button>
+            </div>
+          </form>
+          <div id="message" class="checkout-message"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="cart-summary">
+          <h2>Order Summary</h2>
+          <div id="orderItems" class="order-items-list"></div>
+          <hr class="order-summary-divider">
+          <div class="order-summary-row">
+            <span class="order-total-label">Total:</span>
+            <span class="cart-total" id="total">$0.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/checkout.js"></script>
+</body>
+</html>

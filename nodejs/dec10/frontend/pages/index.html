@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Commerce Store - Home</title>
+  <script>
+    // Prevent flash of unstyled content - load theme immediately
+    (function() {
+      const theme = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="logo">E-Shop</a>
+      <div class="hamburger" id="hamburger">☰</div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/">Home</a></li>
+        <li><a href="/catalog">Catalog</a></li>
+        <li><a href="/cart">Cart (<span id="cartCount">0</span>)</a></li>
+        <li><a href="/chat">Support Chat</a></li>
+        <li id="authLinks"></li>
+        <li><button class="theme-toggle" id="themeToggle">🌙</button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <section class="hero-section">
+      <h1 class="hero-title">Welcome to E-Shop</h1>
+      <p class="hero-description">
+        Discover amazing products at great prices
+      </p>
+      <a href="/catalog" class="btn btn-primary hero-cta">
+        Browse Products
+      </a>
+    </section>
+
+    <section class="featured-section">
+      <h2 class="featured-title">Featured Categories</h2>
+      <div class="products-grid featured-grid">
+        <div class="category-card category-card-electronics" onclick="window.location.href='/catalog?category=Electronics'">
+          <div class="category-card-content">
+            <h3 class="category-title">Electronics</h3>
+          </div>
+        </div>
+        <div class="category-card category-card-sports" onclick="window.location.href='/catalog?category=Sports'">
+          <div class="category-card-content">
+            <h3 class="category-title">Sports</h3>
+          </div>
+        </div>
+        <div class="category-card category-card-home" onclick="window.location.href='/catalog?category=Home'">
+          <div class="category-card-content">
+            <h3 class="category-title">Home</h3>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="/js/common.js"></script>
+</body>
+</html>

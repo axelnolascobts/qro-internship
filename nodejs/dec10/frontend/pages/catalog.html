@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catalog - E-Commerce Store</title>
+  <script>
+    // Prevent flash of unstyled content - load theme immediately
+    (function() {
+      const theme = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="logo">E-Shop</a>
+      <div class="hamburger" id="hamburger">☰</div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/">Home</a></li>
+        <li><a href="/catalog">Catalog</a></li>
+        <li><a href="/cart">Cart (<span id="cartCount">0</span>)</a></li>
+        <li><a href="/chat">Support Chat</a></li>
+        <li id="authLinks"></li>
+        <li><button class="theme-toggle" id="themeToggle">🌙</button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="products-header">
+      <h1>Product Catalog</h1>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search products...">
+      </div>
+    </div>
+
+    <div class="filters">
+      <div class="filter-group">
+        <label>Category</label>
+        <select id="categoryFilter">
+          <option value="">All Categories</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Sports">Sports</option>
+          <option value="Home">Home</option>
+          <option value="Accessories">Accessories</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Min Price</label>
+        <input type="number" id="minPrice" placeholder="0">
+      </div>
+      <div class="filter-group">
+        <label>Max Price</label>
+        <input type="number" id="maxPrice" placeholder="1000">
+      </div>
+      <div class="filter-group">
+        <label>Sort By</label>
+        <select id="sortBy">
+          <option value="">Default</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="name-asc">Name: A-Z</option>
+          <option value="name-desc">Name: Z-A</option>
+          <option value="date-desc">Newest First</option>
+        </select>
+      </div>
+      <button class="btn btn-secondary" id="applyFilters">Apply Filters</button>
+    </div>
+
+    <div id="loading" class="loading hidden">Loading products...</div>
+    <div id="productsGrid" class="products-grid"></div>
+    <div id="emptyState" class="empty-state hidden">
+      <h2>No products found</h2>
+      <p>Try adjusting your filters</p>
+    </div>
+
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/catalog.js"></script>
+</body>
+</html>
