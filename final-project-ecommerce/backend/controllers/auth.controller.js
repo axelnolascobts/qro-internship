@@ -5,13 +5,22 @@ const usersDB = new FileManager('data/users.json');
 
 async function register(req, res) {
     try {
-        const { name, lastname, birthdate, email, address, password } = req.body;
+        const { name, lastname, birthdate, email, address, password, role } = req.body;
 
         // Validation
         if (!name || !lastname || !email || !password) {
             return res.status(400).json({
                 success: false,
                 message: 'Name, lastname, email, and password are required'
+            });
+        }
+
+        // Role validation
+        const validRoles = ['customer', 'seller'];
+        if (!validRoles.includes(role)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid role specified'
             });
         }
 
@@ -53,7 +62,7 @@ async function register(req, res) {
             email,
             address: address || null,
             password: hashedPassword,
-            role: 'customer',
+            role: role || 'customer',
             createdAt: new Date().toISOString()
         };
 

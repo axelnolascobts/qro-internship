@@ -5,10 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Commerce Store</title>
+
+    <!-- Set theme before CSS loads to prevent white flash -->
+    <script>
+        (function () {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+
     <link rel="stylesheet" href="/css/main.css">
 </head>
 
 <body>
+    <!-- Page Loading Overlay -->
+    <div id="page-transition" class="page-transition hidden">
+        <div class="page-transition-content">
+            <div class="page-transition-text">Loading...</div>
+        </div>
+    </div>
+
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">

@@ -5,10 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cart - ShopHub</title>
+
+    <!-- Set theme before CSS loads to prevent white flash -->
+    <script>
+        (function () {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+
     <link rel="stylesheet" href="/css/main.css">
 </head>
 
 <body>
+    <!-- Page Loading Overlay -->
+    <div id="page-transition" class="page-transition hidden">
+        <div class="page-transition-content">
+            <div class="page-transition-text">Loading...</div>
+        </div>
+    </div>
+
     <nav class="navbar">
         <div class="nav-container">
             <a href="/" class="nav-logo">ShopHub</a>
@@ -61,67 +77,122 @@
 
     <script src="/js/common.js"></script>
     <script>
-        function renderCart() {
-            const cart = getCart();
-            const container = document.getElementById('cart-items');
-            const checkoutBtn = document.getElementById('checkout-btn');
+        async function renderCart() {
+            try {
+                const cart = await getCart();
+                const container = document.getElementById('cart-items');
+                const checkoutBtn = document.getElementById('checkout-btn');
 
-            if (cart.length === 0) {
-                container.innerHTML = '<div class="card"><p>Your cart is empty. <a href="/catalog" style="color: var(--primary-color);">Continue shopping</a></p></div>';
-                checkoutBtn.style.display = 'none';
-            } else {
-                container.innerHTML = cart.map(item => `
-          <div class="card mb-2">
-            <div style="display: flex; gap: 1rem; align-items: center;">
-              <img src="${item.image}" alt="${item.name}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 0.5rem;">
-              <div style="flex: 1;">
-                <h3 style="margin-bottom: 0.5rem;">${item.name}</h3>
-                <p style="color: var(--primary-color); font-weight: 600; margin-bottom: 0.5rem;">${formatCurrency(item.price)}</p>
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                  <input type="number" value="${item.quantity}" min="1" 
-                    onchange="updateCartItemQuantity('${item.productId}', this.value)"
-                    style="width: 70px; padding: 0.5rem; border: 2px solid var(--border-color); border-radius: 0.5rem;">
-                  <span style="color: var(--text-secondary);">× ${formatCurrency(item.price)} = ${formatCurrency(item.price * item.quantity)}</span>
+                if (cart.length === 0) {
+                    container.innerHTML = '<div class="card"><p>Your cart is empty. <a href="/catalog" style="color: var(--primary-color);">Continue shopping</a></p></div>';
+                    checkoutBtn.style.display = 'none';
+                } else {
+                    container.innerHTML = cart.map(item => `
+              <div class="card mb-2">
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                  <img src="${item.image}" alt="${item.name}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 0.5rem;">
+                  <div style="flex: 1;">
+                    <h3 style="margin-bottom: 0.5rem;">${item.name}</h3>
+                    <p style="color: var(--primary-color); font-weight: 600; margin-bottom: 0.5rem;">${formatCurrency(item.price)}</p>
+                     <div style="display: flex; align-items: center; gap: 1rem;">
+                       <div class="quantity-controls" style="display: flex; align-items: center; border: 2px solid var(--border-color); border-radius: 0.5rem;">
+                         <button onclick="decrementQuantity('${item.productId}')" 
+                           style="border: none; background: none; padding: 0.5rem; cursor: pointer; font-size: 1.2rem;">−</button>
+                         <input type="number" id="qty-${item.productId}" value="${item.quantity}" min="1" max="99"
+                           onchange="updateCartItemQuantity('${item.productId}', this.value)"
+                           style="width: 50px; border: none; text-align: center; padding: 0.5rem;">
+                         <button onclick="incrementQuantity('${item.productId}')"
+                           style="border: none; background: none; padding: 0.5rem; cursor: pointer; font-size: 1.2rem;">+</button>
+                       </div>
+                       <span style="color: var(--text-secondary);">× ${formatCurrency(item.price)} = ${formatCurrency(item.price * item.quantity)}</span>
+                     </div>
+                  </div>
+                  <button onclick="removeFromCart('${item.productId}')" class="btn btn-danger">Remove</button>
                 </div>
               </div>
-              <button onclick="removeFromCart('${item.productId}')" class="btn btn-danger">Remove</button>
-            </div>
-          </div>
-        `).join('');
-                checkoutBtn.style.display = 'block';
-            }
-
-            updateTotals();
-        }
-
-        function updateTotals() {
-            const total = getCartTotal();
-            document.getElementById('subtotal').textContent = formatCurrency(total);
-            document.getElementById('total').textContent = formatCurrency(total);
-        }
-
-        window.updateCartItemQuantity = (productId, quantity) => {
-            const cart = getCart();
-            const item = cart.find(item => item.productId === productId);
-
-            if (item) {
-                if (quantity <= 0) {
-                    const updatedCart = cart.filter(item => item.productId !== productId);
-                    setCart(updatedCart);
-                } else {
-                    item.quantity = parseInt(quantity);
-                    setCart(cart);
+            `).join('');
+                    checkoutBtn.style.display = 'block';
                 }
+
+                await updateTotals();
+            } catch (error) {
+                console.error('Error rendering cart:', error);
+                const container = document.getElementById('cart-items');
+                const checkoutBtn = document.getElementById('checkout-btn');
+                container.innerHTML = '<div class="card"><p>Error loading cart. Please refresh the page.</p></div>';
+                checkoutBtn.style.display = 'none';
             }
-            renderCart();
+        }
+
+        async function updateTotals() {
+            try {
+                const total = await getCartTotal();
+                document.getElementById('subtotal').textContent = formatCurrency(total);
+                document.getElementById('total').textContent = formatCurrency(total);
+            } catch (error) {
+                console.error('Error updating totals:', error);
+                document.getElementById('subtotal').textContent = formatCurrency(0);
+                document.getElementById('total').textContent = formatCurrency(0);
+            }
+        }
+
+        window.updateCartItemQuantity = async (productId, quantity) => {
+            try {
+                // Validate input
+                const qty = parseInt(quantity);
+                if (isNaN(qty) || qty < 1) {
+                    showNotification('Quantity must be at least 1', 'error');
+                    await renderCart(); // Reset to original value
+                    return;
+                }
+                if (qty > 99) {
+                    showNotification('Maximum quantity is 99', 'error');
+                    await renderCart(); // Reset to original value
+                    return;
+                }
+                
+                // Call the API function from common.js
+                await updateCartItemQuantityAPI(productId, qty);
+                await renderCart();
+            } catch (error) {
+                console.error('Error updating cart item quantity:', error);
+                showNotification('Error updating cart', 'error');
+                await renderCart(); // Reset to original value on error
+            }
         };
 
-        const originalRemoveFromCart = removeFromCart;
-        window.removeFromCart = (productId) => {
-            originalRemoveFromCart(productId);
-            renderCart();
+        window.removeFromCart = async (productId) => {
+            try {
+                if (confirm('Are you sure you want to remove this item from your cart?')) {
+                    await removeFromCartAPI(productId);
+                    await renderCart();
+                    showNotification('Item removed from cart', 'success');
+                }
+            } catch (error) {
+                console.error('Error removing from cart:', error);
+                showNotification('Error removing item from cart', 'error');
+            }
         };
 
+        window.incrementQuantity = async (productId) => {
+            const input = document.getElementById(`qty-${productId}`);
+            const currentQty = parseInt(input.value);
+            if (currentQty < 99) {
+                input.value = currentQty + 1;
+                await updateCartItemQuantity(productId, currentQty + 1);
+            }
+        };
+
+        window.decrementQuantity = async (productId) => {
+            const input = document.getElementById(`qty-${productId}`);
+            const currentQty = parseInt(input.value);
+            if (currentQty > 1) {
+                input.value = currentQty - 1;
+                await updateCartItemQuantity(productId, currentQty - 1);
+            }
+        };
+
+        // Initial render
         renderCart();
     </script>
 
@@ -130,6 +201,20 @@
             .container>div {
                 grid-template-columns: 1fr !important;
             }
+        }
+        
+        /* Quantity controls styling */
+        .quantity-controls button:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .quantity-controls input:focus {
+            outline: none;
+        }
+        
+        .quantity-controls button:active {
+            transform: scale(0.95);
         }
     </style>
 </body>

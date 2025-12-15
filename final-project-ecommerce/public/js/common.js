@@ -31,7 +31,16 @@ function isAuthenticated() {
     return !!getToken();
 }
 
-function logout() {
+async function logout() {
+    // Clear server cart if authenticated
+    if (isAuthenticated()) {
+        try {
+            await clearCart();
+        } catch (error) {
+            console.error('Error clearing cart on logout:', error);
+        }
+    }
+    
     removeToken();
     removeUserData();
     window.location.href = '/login';
@@ -70,76 +79,245 @@ async function apiRequest(endpoint, options = {}) {
 }
 
 // Cart utilities
-function getCart() {
+async function getCart() {
+    if (!isAuthenticated()) {
+        // Fallback to localStorage for guest users
+        const cart = localStorage.getItem('cart');
+        return cart ? JSON.parse(cart) : [];
+    }
+
+    try {
+        const response = await apiRequest('/cart');
+        if (response.ok && response.data.success) {
+            return response.data.cart.items || [];
+        }
+    } catch (error) {
+        console.error('Error fetching cart:', error);
+    }
+
+    // Fallback to localStorage on error
     const cart = localStorage.getItem('cart');
     return cart ? JSON.parse(cart) : [];
 }
 
-function setCart(cart) {
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartBadge();
-}
-
-function addToCart(product, quantity = 1) {
-    const cart = getCart();
-    const existingItem = cart.find(item => item.productId === product.id);
-
-    if (existingItem) {
-        existingItem.quantity += quantity;
-    } else {
-        cart.push({
-            productId: product.id,
-            name: product.name,
-            price: product.price,
-            image: product.image,
-            quantity: quantity,
-        });
+async function setCart(cart) {
+    if (!isAuthenticated()) {
+        // Use localStorage for guest users
+        localStorage.setItem('cart', JSON.stringify(cart));
+        // Store count for sync updates
+        const count = cart.reduce((total, item) => total + item.quantity, 0);
+        localStorage.setItem('cart-badge-count', count.toString());
+        updateCartBadge();
+        return;
     }
 
-    setCart(cart);
-    showNotification('Product added to cart!', 'success');
+    try {
+        // For authenticated users, cart is managed on server
+        // This function is mainly used for updating the badge
+        updateCartBadge();
+    } catch (error) {
+        console.error('Error setting cart:', error);
+        // Fallback to localStorage
+        localStorage.setItem('cart', JSON.stringify(cart));
+        const count = cart.reduce((total, item) => total + item.quantity, 0);
+        localStorage.setItem('cart-badge-count', count.toString());
+        updateCartBadge();
+    }
 }
 
-function removeFromCart(productId) {
-    const cart = getCart();
-    const updatedCart = cart.filter(item => item.productId !== productId);
-    setCart(updatedCart);
-}
+async function addToCart(product, quantity = 1) {
+    if (!isAuthenticated()) {
+        // Use localStorage for guest users
+        const cart = await getCart();
+        const existingItem = cart.find(item => item.productId === product.id);
 
-function updateCartItemQuantity(productId, quantity) {
-    const cart = getCart();
-    const item = cart.find(item => item.productId === productId);
-
-    if (item) {
-        if (quantity <= 0) {
-            removeFromCart(productId);
+        if (existingItem) {
+            existingItem.quantity += quantity;
         } else {
-            item.quantity = quantity;
-            setCart(cart);
+            cart.push({
+                productId: product.id,
+                name: product.name,
+                price: product.price,
+                image: product.image,
+                quantity: quantity,
+            });
+        }
+
+        await setCart(cart);
+        showNotification('Product added to cart!', 'success');
+        return;
+    }
+
+    try {
+        const response = await apiRequest('/cart/add', {
+            method: 'POST',
+            body: JSON.stringify({
+                productId: product.id,
+                quantity: quantity
+            })
+        });
+
+        if (response.ok && response.data.success) {
+            showNotification('Product added to cart!', 'success');
+            updateCartBadge();
+        } else {
+            showNotification(response.data?.message || 'Error adding to cart', 'error');
+        }
+    } catch (error) {
+        console.error('Error adding to cart:', error);
+        showNotification('Error adding to cart', 'error');
+    }
+}
+
+async function removeFromCartAPI(productId) {
+    if (!isAuthenticated()) {
+        // Use localStorage for guest users
+        const cart = await getCart();
+        const updatedCart = cart.filter(item => item.productId !== productId);
+        await setCart(updatedCart);
+        return;
+    }
+
+    try {
+        const response = await apiRequest('/cart/remove', {
+            method: 'DELETE',
+            body: JSON.stringify({
+                productId: productId
+            })
+        });
+
+        if (response.ok && response.data.success) {
+            updateCartBadge();
+        } else {
+            showNotification(response.data?.message || 'Error removing from cart', 'error');
+        }
+    } catch (error) {
+        console.error('Error removing from cart:', error);
+        showNotification('Error removing from cart', 'error');
+    }
+}
+
+async function updateCartItemQuantityAPI(productId, quantity) {
+    if (!isAuthenticated()) {
+        // Use localStorage for guest users
+        const cart = await getCart();
+        const item = cart.find(item => item.productId === productId);
+
+        if (item) {
+            if (quantity <= 0) {
+                await removeFromCartAPI(productId);
+            } else {
+                item.quantity = quantity;
+                await setCart(cart);
+            }
+        }
+        return;
+    }
+
+    try {
+        const response = await apiRequest('/cart/update', {
+            method: 'PUT',
+            body: JSON.stringify({
+                productId: productId,
+                quantity: quantity
+            })
+        });
+
+        if (response.ok && response.data.success) {
+            updateCartBadge();
+        } else {
+            showNotification(response.data?.message || 'Error updating cart', 'error');
+        }
+    } catch (error) {
+        console.error('Error updating cart:', error);
+        showNotification('Error updating cart', 'error');
+    }
+}
+
+async function clearCart() {
+    if (!isAuthenticated()) {
+        // Use localStorage for guest users
+        await setCart([]);
+        return;
+    }
+
+    try {
+        const response = await apiRequest('/cart/clear', {
+            method: 'DELETE'
+        });
+
+        if (response.ok && response.data.success) {
+            updateCartBadge();
+        } else {
+            showNotification(response.data?.message || 'Error clearing cart', 'error');
+        }
+    } catch (error) {
+        console.error('Error clearing cart:', error);
+        showNotification('Error clearing cart', 'error');
+    }
+}
+
+async function getCartTotal() {
+    const cart = await getCart();
+    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+}
+
+async function getCartItemCount() {
+    const cart = await getCart();
+    return cart.reduce((count, item) => count + item.quantity, 0);
+}
+
+async function updateCartBadge() {
+    const badge = document.querySelector('.cart-badge .badge');
+    if (badge) {
+        try {
+            const count = await getCartItemCount();
+            badge.textContent = count;
+            badge.style.display = count > 0 ? 'flex' : 'none';
+        } catch (error) {
+            console.error('Error updating cart badge:', error);
+            badge.textContent = '0';
+            badge.style.display = 'none';
         }
     }
 }
 
-function clearCart() {
-    setCart([]);
-}
-
-function getCartTotal() {
-    const cart = getCart();
-    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-}
-
-function getCartItemCount() {
-    const cart = getCart();
-    return cart.reduce((count, item) => count + item.quantity, 0);
-}
-
-function updateCartBadge() {
+// Synchronous version for non-critical updates
+function updateCartBadgeSync() {
     const badge = document.querySelector('.cart-badge .badge');
     if (badge) {
-        const count = getCartItemCount();
+        const count = parseInt(localStorage.getItem('cart-badge-count') || '0');
         badge.textContent = count;
         badge.style.display = count > 0 ? 'flex' : 'none';
+    }
+}
+
+// Merge local cart with server cart on login
+async function mergeCartOnLogin() {
+    if (!isAuthenticated()) return;
+
+    const localCart = localStorage.getItem('cart');
+    if (!localCart) return;
+
+    try {
+        const cartItems = JSON.parse(localCart);
+        if (cartItems.length === 0) return;
+
+        const response = await apiRequest('/cart/merge', {
+            method: 'POST',
+            body: JSON.stringify({
+                localCart: cartItems
+            })
+        });
+
+        if (response.ok && response.data.success) {
+            // Clear local cart after successful merge
+            localStorage.removeItem('cart');
+            updateCartBadge();
+            showNotification('Cart items merged successfully!', 'success');
+        }
+    } catch (error) {
+        console.error('Error merging cart:', error);
     }
 }
 
@@ -213,7 +391,7 @@ style.textContent = `
 document.head.appendChild(style);
 
 // Navigation utilities
-function initNavigation() {
+async function initNavigation() {
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
     const themeToggle = document.querySelector('.theme-toggle');
@@ -237,33 +415,71 @@ function initNavigation() {
         themeToggle.addEventListener('click', toggleTheme);
     }
 
+    // Add page transition detection for navigation links
+    document.querySelectorAll('a[href^="/"]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            // Skip if it's the same page or external link
+            if (href !== window.location.pathname && !href.includes('http')) {
+                showPageTransition();
+            }
+        });
+    });
+
     // Update navigation based on auth status
-    updateNavigation();
-    updateCartBadge();
+    try {
+        await updateNavigation();
+        await updateCartBadge();
+    } catch (error) {
+        console.error('Navigation initialization error:', error);
+    }
 }
 
-function updateNavigation() {
-    const user = getUserData();
-    const navMenu = document.querySelector('.nav-menu');
+async function updateNavigation() {
+    try {
+        const user = getUserData();
+        const navMenu = document.querySelector('.nav-menu');
 
-    if (!navMenu) return;
+        if (!navMenu) return;
 
-    if (user) {
-        const logoutBtn = navMenu.querySelector('#logout-btn');
-        if (logoutBtn) {
-            logoutBtn.style.display = 'block';
-        }
+        if (user) {
+            const logoutBtn = navMenu.querySelector('#logout-btn');
+            if (logoutBtn) {
+                logoutBtn.style.display = 'block';
+            }
 
-        const loginLink = navMenu.querySelector('a[href="/login"]');
-        const registerLink = navMenu.querySelector('a[href="/register"]');
-        if (loginLink) loginLink.style.display = 'none';
-        if (registerLink) registerLink.style.display = 'none';
+            const loginLink = navMenu.querySelector('a[href="/login"]');
+            const registerLink = navMenu.querySelector('a[href="/register"]');
+            if (loginLink) loginLink.style.display = 'none';
+            if (registerLink) registerLink.style.display = 'none';
 
-        // Show seller dashboard for sellers
-        if (user.role === 'seller' || user.role === 'admin') {
+            // Show seller dashboard for sellers
+            if (user.role === 'seller' || user.role === 'admin') {
+                const sellerLink = navMenu.querySelector('a[href="/seller"]');
+                if (sellerLink) sellerLink.style.display = 'block';
+            }
+
+            // Merge local cart with server cart on login
+            try {
+                await mergeCartOnLogin();
+            } catch (error) {
+                console.error('Cart merge error:', error);
+            }
+        } else {
+            // Reset to guest mode
+            const logoutBtn = navMenu.querySelector('#logout-btn');
+            if (logoutBtn) logoutBtn.style.display = 'none';
+
+            const loginLink = navMenu.querySelector('a[href="/login"]');
+            const registerLink = navMenu.querySelector('a[href="/register"]');
+            if (loginLink) loginLink.style.display = 'block';
+            if (registerLink) registerLink.style.display = 'block';
+
             const sellerLink = navMenu.querySelector('a[href="/seller"]');
-            if (sellerLink) sellerLink.style.display = 'block';
+            if (sellerLink) sellerLink.style.display = 'none';
         }
+    } catch (error) {
+        console.error('Navigation update error:', error);
     }
 }
 
@@ -300,6 +516,285 @@ function formatDate(dateString) {
     }).format(new Date(dateString));
 }
 
+// Chat username utilities
+function getChatUsername() {
+    const storedUsername = localStorage.getItem('chatUsername');
+    if (storedUsername) {
+        return storedUsername;
+    }
+    
+    const user = getUserData();
+    if (user) {
+        const username = `${user.name} ${user.lastname}`;
+        localStorage.setItem('chatUsername', username);
+        return username;
+    }
+    
+    // Generate guest username only once
+    const guestUsername = `Guest${Math.floor(Math.random() * 1000)}`;
+    localStorage.setItem('chatUsername', guestUsername);
+    return guestUsername;
+}
+
+function setChatUsername(username) {
+    localStorage.setItem('chatUsername', username);
+}
+
+function clearChatUsername() {
+    localStorage.removeItem('chatUsername');
+}
+
+// Session management utilities
+function getSessionId() {
+    let sessionId = sessionStorage.getItem('socketSessionId');
+    if (!sessionId) {
+        sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        sessionStorage.setItem('socketSessionId', sessionId);
+    }
+    return sessionId;
+}
+
+function clearSessionData() {
+    sessionStorage.removeItem('socketSessionId');
+    sessionStorage.removeItem('socketReconnecting');
+}
+
+// Centralized Socket Manager
+class SocketManager {
+    constructor() {
+        this.socket = null;
+        this.username = null;
+        this.isConnected = false;
+        this.room = 'general-support';
+        this.reconnectAttempts = 0;
+        this.maxReconnectAttempts = 5;
+        this.reconnectDelay = 1000;
+        this.eventListeners = new Map();
+        this.typingTimeout = null;
+        this.sessionId = getSessionId();
+        this.isReconnecting = false;
+        this.hasJoinedRoom = false;
+    }
+
+    getInstance() {
+        if (!this.socket) {
+            this.initializeConnection();
+        }
+        return this.socket;
+    }
+
+    initializeConnection() {
+        if (typeof io === 'undefined') {
+            console.error('Socket.IO library not loaded');
+            return null;
+        }
+
+        this.username = getChatUsername();
+        
+        // Check if we're reconnecting from a page navigation
+        const isReconnecting = sessionStorage.getItem('socketReconnecting') === 'true';
+        
+        // Create socket with session ID for server identification
+        this.socket = io('http://localhost:5050', {
+            query: {
+                sessionId: this.sessionId,
+                isReconnecting: isReconnecting
+            }
+        });
+        
+        this.setupConnectionEvents();
+        
+        // Don't auto-join room if reconnecting - wait for server to acknowledge
+        if (!isReconnecting) {
+            this.joinRoom();
+        }
+        
+        return this.socket;
+    }
+
+    setupConnectionEvents() {
+        this.socket.on('connect', () => {
+            console.log('Socket connected:', this.socket.id);
+            this.isConnected = true;
+            this.reconnectAttempts = 0;
+            
+            // Clear reconnecting flag on successful connection
+            sessionStorage.removeItem('socketReconnecting');
+            
+            // Join room if not already joined (server will acknowledge reconnection)
+            if (!this.hasJoinedRoom) {
+                this.joinRoom();
+            }
+        });
+
+        this.socket.on('disconnect', (reason) => {
+            console.log('Socket disconnected:', reason);
+            this.isConnected = false;
+            this.hasJoinedRoom = false;
+            
+            // Set reconnecting flag for page navigation scenarios
+            if (reason === 'io client disconnect' || reason === 'transport close') {
+                sessionStorage.setItem('socketReconnecting', 'true');
+            }
+            
+            if (reason === 'io server disconnect') {
+                // Server initiated disconnect, don't reconnect automatically
+                this.socket.connect();
+            }
+        });
+
+        this.socket.on('connect_error', (error) => {
+            console.error('Socket connection error:', error);
+            this.handleReconnect();
+        });
+
+        // Handle server acknowledgment of reconnection
+        this.socket.on('session-acknowledged', (data) => {
+            console.log('Session acknowledged by server:', data);
+            if (data.rejoined) {
+                console.log('User rejoined chat session');
+                this.hasJoinedRoom = true;
+            }
+        });
+    }
+
+    handleReconnect() {
+        if (this.reconnectAttempts < this.maxReconnectAttempts) {
+            this.reconnectAttempts++;
+            console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
+            
+            setTimeout(() => {
+                this.socket.connect();
+            }, this.reconnectDelay * this.reconnectAttempts);
+        } else {
+            console.error('Max reconnection attempts reached');
+        }
+    }
+
+    joinRoom() {
+        if (this.socket && this.isConnected && this.username) {
+            this.socket.emit('join-room', { 
+                room: this.room, 
+                username: this.username,
+                sessionId: this.sessionId
+            });
+            this.hasJoinedRoom = true;
+        }
+    }
+
+    disconnect() {
+        if (this.socket) {
+            this.socket.disconnect();
+            this.socket = null;
+            this.isConnected = false;
+        }
+    }
+
+    updateUsername(newUsername) {
+        this.username = newUsername;
+        setChatUsername(newUsername);
+        
+        if (this.socket && this.isConnected) {
+            // Rejoin room with new username
+            this.joinRoom();
+        }
+    }
+
+    // Event listener management
+    addEventListener(event, callback) {
+        if (this.socket) {
+            this.socket.on(event, callback);
+            
+            // Store listener for cleanup
+            if (!this.eventListeners.has(event)) {
+                this.eventListeners.set(event, []);
+            }
+            this.eventListeners.get(event).push(callback);
+        }
+    }
+
+    removeEventListener(event, callback) {
+        if (this.socket) {
+            this.socket.off(event, callback);
+            
+            if (this.eventListeners.has(event)) {
+                const listeners = this.eventListeners.get(event);
+                const index = listeners.indexOf(callback);
+                if (index > -1) {
+                    listeners.splice(index, 1);
+                }
+            }
+        }
+    }
+
+    emit(event, data) {
+        if (this.socket && this.isConnected) {
+            this.socket.emit(event, data);
+        }
+    }
+
+    // Cleanup method
+    cleanup() {
+        if (this.typingTimeout) {
+            clearTimeout(this.typingTimeout);
+            this.typingTimeout = null;
+        }
+        
+        // Remove all event listeners
+        this.eventListeners.forEach((listeners, event) => {
+            listeners.forEach(callback => {
+                this.socket.off(event, callback);
+            });
+        });
+        this.eventListeners.clear();
+        
+        // Don't disconnect on page navigation - preserve session
+        // Only disconnect on explicit logout or browser close
+        // this.disconnect();
+    }
+
+    // Explicit disconnect for logout scenarios
+    disconnect() {
+        if (this.socket) {
+            this.socket.disconnect();
+            this.socket = null;
+            this.isConnected = false;
+            this.hasJoinedRoom = false;
+            clearSessionData();
+        }
+    }
+}
+
+// Global socket manager instance
+let socketManager = null;
+
+function getSocketManager() {
+    if (!socketManager) {
+        socketManager = new SocketManager();
+    }
+    return socketManager;
+}
+
+// Preserve session on page navigation
+window.addEventListener('beforeunload', () => {
+    if (socketManager) {
+        // Mark as reconnecting for next page load
+        sessionStorage.setItem('socketReconnecting', 'true');
+        // Don't disconnect - preserve session
+        socketManager.cleanup();
+    }
+});
+
+// Clear session on browser close (detect via pagehide)
+window.addEventListener('pagehide', (event) => {
+    // Only clear if not a page navigation
+    if (event.persisted === false) {
+        if (socketManager) {
+            socketManager.disconnect();
+        }
+    }
+});
+
 // Global Chat Widget
 function initGlobalChat() {
     // Don't initialize on the chat page itself
@@ -317,6 +812,11 @@ function initGlobalChat() {
 }
 
 function setupChat() {
+    // Check if chat widget already exists
+    if (document.getElementById('chat-bubble')) {
+        return;
+    }
+
     // Create chat bubble HTML
     const chatHTML = `
     <button id="chat-bubble" class="chat-bubble">
@@ -581,12 +1081,11 @@ function setupChat() {
     document.head.appendChild(chatStyles);
     document.body.insertAdjacentHTML('beforeend', chatHTML);
 
-    // Initialize chat functionality
-    const socket = io('http://localhost:5050');
-    const user = getUserData();
-    const username = user ? `${user.name} ${user.lastname}` : `Guest${Math.floor(Math.random() * 1000)}`;
-    const room = 'general-support';
-    let typingTimeout;
+    // Initialize chat functionality using SocketManager
+    const socketManager = getSocketManager();
+    const socket = socketManager.getInstance();
+    const username = socketManager.username;
+    const room = socketManager.room;
     let unreadCount = 0;
     let chatOpen = false;
 
@@ -613,9 +1112,8 @@ function setupChat() {
         badge.style.display = unreadCount > 0 ? 'flex' : 'none';
     }
 
-    socket.emit('join-room', { room, username });
-
-    socket.on('message-history', (messages) => {
+    // Socket event listeners
+    socketManager.addEventListener('message-history', (messages) => {
         const container = document.getElementById('messages');
         if (messages.length === 0) {
             container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No messages yet. Start the conversation!</p>';
@@ -633,7 +1131,7 @@ function setupChat() {
         }
     });
 
-    socket.on('new-message', (message) => {
+    socketManager.addEventListener('new-message', (message) => {
         const container = document.getElementById('messages');
         const messageEl = document.createElement('div');
         messageEl.className = 'message-item';
@@ -662,19 +1160,23 @@ function setupChat() {
         audio.play().catch(() => { });
     });
 
-    socket.on('users-update', (users) => {
+    socketManager.addEventListener('users-update', (users) => {
         document.getElementById('users-list').innerHTML = users.map(u => `<p>• ${u}</p>`).join('');
     });
 
-    socket.on('user-joined', (data) => {
+    socketManager.addEventListener('user-joined', (data) => {
         showNotification(`${data.username} joined the chat`, 'info');
     });
 
-    socket.on('user-left', (data) => {
+    socketManager.addEventListener('user-reconnected', (data) => {
+        showNotification(`${data.username} reconnected to the chat`, 'info');
+    });
+
+    socketManager.addEventListener('user-left', (data) => {
         showNotification(`${data.username} left the chat`, 'info');
     });
 
-    socket.on('user-typing', (data) => {
+    socketManager.addEventListener('user-typing', (data) => {
         if (data.typing) {
             document.getElementById('typing-indicator').textContent = `${data.username} is typing...`;
         } else {
@@ -682,7 +1184,7 @@ function setupChat() {
         }
     });
 
-    socket.on('cooldown-error', (data) => {
+    socketManager.addEventListener('cooldown-error', (data) => {
         showNotification(data.message, 'error');
     });
 
@@ -692,29 +1194,88 @@ function setupChat() {
         const message = input.value.trim();
 
         if (message) {
-            socket.emit('send-message', { room, username, message });
+            socketManager.emit('send-message', { room, username, message });
             input.value = '';
-            socket.emit('typing-stop', { room, username });
+            socketManager.emit('typing-stop', { room, username });
         }
     });
 
     document.getElementById('message-input').addEventListener('input', (e) => {
         if (e.target.value.trim()) {
-            socket.emit('typing-start', { room, username });
-            clearTimeout(typingTimeout);
-            typingTimeout = setTimeout(() => {
-                socket.emit('typing-stop', { room, username });
+            socketManager.emit('typing-start', { room, username });
+            clearTimeout(socketManager.typingTimeout);
+            socketManager.typingTimeout = setTimeout(() => {
+                socketManager.emit('typing-stop', { room, username });
             }, 1000);
         } else {
-            socket.emit('typing-stop', { room, username });
+            socketManager.emit('typing-stop', { room, username });
         }
     });
 }
 
+// Loading state management
+let loadingTimeout = null;
+let loadingStartTime = null;
+
+function showPageTransition() {
+    loadingStartTime = Date.now();
+    
+    // Create loading overlay if it doesn't exist
+    let overlay = document.getElementById('page-transition');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'page-transition';
+        overlay.innerHTML = `
+            <div class="page-transition-content">
+                <div class="page-transition-text">Loading...</div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    }
+    
+    // Only show overlay after 2 seconds
+    loadingTimeout = setTimeout(() => {
+        // Show overlay with current theme
+        const theme = getTheme();
+        document.documentElement.setAttribute('data-theme', theme);
+        overlay.classList.remove('hidden');
+        
+        // Prevent scrolling during loading
+        document.body.style.overflow = 'hidden';
+    }, 2000);
+}
+
+function hidePageTransition() {
+    // Clear the timeout if it hasn't fired yet
+    if (loadingTimeout) {
+        clearTimeout(loadingTimeout);
+        loadingTimeout = null;
+    }
+    
+    const overlay = document.getElementById('page-transition');
+    if (overlay && !overlay.classList.contains('hidden')) {
+        overlay.classList.add('hidden');
+        // Remove overlay after transition completes
+        setTimeout(() => {
+            if (overlay.parentNode) {
+                overlay.parentNode.removeChild(overlay);
+            }
+        }, 300);
+        
+        // Restore scrolling
+        document.body.style.overflow = '';
+    }
+}
+
 // Initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // Initialize everything else
     initTheme();
-    initNavigation();
+    try {
+        await initNavigation();
+    } catch (error) {
+        console.error('Navigation initialization failed:', error);
+    }
     checkAuth();
     initGlobalChat();
 });

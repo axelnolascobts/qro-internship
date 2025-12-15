@@ -207,9 +207,14 @@ Data persists between server restarts.
 ## Testing the Application
 
 ### Create a Seller Account
-1. Register a new user
-2. Manually edit `data/users.json` and change the user's `role` to `"seller"`
-3. Login again to access the seller dashboard
+1. Register a new user and select "Seller - Sell products" as account type
+2. Login with your seller credentials
+3. Access the seller dashboard immediately
+
+### Create a Customer Account
+1. Register a new user and select "Customer - Buy products" as account type
+2. Login with your customer credentials
+3. Browse products and shop normally
 
 ### Test Features
 1. Browse products in the catalog

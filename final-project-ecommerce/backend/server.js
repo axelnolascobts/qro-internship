@@ -26,10 +26,12 @@ app.use(express.static(path.join(__dirname, '../public')));
 const authRoutes = require('./routes/auth.route');
 const productsRoutes = require('./routes/products.route');
 const ordersRoutes = require('./routes/orders.route');
+const cartRoutes = require('./routes/cart.route');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/orders', ordersRoutes);
+app.use('/api/cart', cartRoutes);
 
 // Swagger Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
@@ -79,22 +81,70 @@ app.get('/chat', (req, res) => {
 const messagesDB = new FileManager('data/messages.json');
 const connectedUsers = new Map();
 const typingUsers = new Set();
+const activeSessions = new Map(); // Track sessions to prevent duplicates
 
 io.on('connection', (socket) => {
-    console.log('User connected:', socket.id);
+
+    // Extract session info from handshake query
+    const sessionId = socket.handshake.query.sessionId;
+    const isReconnecting = socket.handshake.query.isReconnecting === 'true';
+
+    // Check if this session already exists (page navigation scenario)
+    const existingSession = activeSessions.get(sessionId);
+    let isReconnection = false;
+
+    if (existingSession && isReconnecting) {
+        // This is a reconnection from page navigation
+        isReconnection = true;
+
+        // Remove old socket from connected users
+        const existingSocketId = existingSession.socketId;
+        if (existingSocketId) {
+            const oldUserInfo = connectedUsers.get(existingSocketId);
+            if (oldUserInfo) {
+                connectedUsers.delete(existingSocketId);
+            }
+        }
+    }
+
+    // Update session tracking
+    activeSessions.set(sessionId, {
+        socketId: socket.id,
+        username: null, // Will be set on join-room
+        room: null,
+        connectedAt: new Date()
+    });
 
     // Join room
-    socket.on('join-room', async ({ room, username }) => {
+    socket.on('join-room', async ({ room, username, sessionId: clientSessionId }) => {
         socket.join(room);
-        connectedUsers.set(socket.id, { username, room });
+
+        // Update connected users and session tracking
+        const userInfo = { username, room, sessionId: clientSessionId };
+        connectedUsers.set(socket.id, userInfo);
+
+        // Update session info
+        const sessionInfo = activeSessions.get(clientSessionId);
+        if (sessionInfo) {
+            sessionInfo.username = username;
+            sessionInfo.room = room;
+        }
 
         // Load message history
         const messages = await messagesDB.read();
         const roomMessages = messages.filter(msg => msg.room === room);
         socket.emit('message-history', roomMessages);
 
-        // Broadcast user joined
-        socket.to(room).emit('user-joined', { username });
+        if (isReconnection) {
+            // User reconnected - notify others
+            socket.to(room).emit('user-reconnected', { username });
+
+            // Acknowledge reconnection to client
+            socket.emit('session-acknowledged', { rejoined: true });
+        } else {
+            // New user joined
+            socket.to(room).emit('user-joined', { username });
+        }
 
         // Send updated user list
         const roomUsers = Array.from(connectedUsers.values())
@@ -153,8 +203,19 @@ io.on('connection', (socket) => {
         const userInfo = connectedUsers.get(socket.id);
 
         if (userInfo) {
-            const { room, username } = userInfo;
-            socket.to(room).emit('user-left', { username });
+            const { room, username, sessionId } = userInfo;
+
+            // Check if this is a page navigation (session still active)
+            const sessionInfo = activeSessions.get(sessionId);
+            const isPageNavigation = sessionInfo && sessionInfo.socketId === socket.id;
+
+            if (!isPageNavigation) {
+                // True disconnect - notify others
+                socket.to(room).emit('user-left', { username });
+
+                // Clean up session
+                activeSessions.delete(sessionId);
+            }
 
             connectedUsers.delete(socket.id);
 
@@ -164,8 +225,6 @@ io.on('connection', (socket) => {
                 .map(user => user.username);
             io.to(room).emit('users-update', roomUsers);
         }
-
-        console.log('User disconnected:', socket.id);
     });
 });
 

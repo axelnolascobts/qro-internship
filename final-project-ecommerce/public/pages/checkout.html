@@ -5,10 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - ShopHub</title>
+
+    <!-- Set theme before CSS loads to prevent white flash -->
+    <script>
+        (function () {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+
     <link rel="stylesheet" href="/css/main.css">
 </head>
 
 <body>
+    <!-- Page Loading Overlay -->
+    <div id="page-transition" class="page-transition hidden">
+        <div class="page-transition-content">
+            <div class="page-transition-text">Loading...</div>
+        </div>
+    </div>
+
     <nav class="navbar">
         <div class="nav-container">
             <a href="/" class="nav-logo">ShopHub</a>
@@ -78,24 +94,33 @@
 
     <script src="/js/common.js"></script>
     <script>
-        if (!isAuthenticated()) window.location.href = '/login';
+        async function initializeCheckout() {
+            if (!isAuthenticated()) {
+                window.location.href = '/login';
+                return;
+            }
 
-        const cart = getCart();
-        if (cart.length === 0) window.location.href = '/cart';
+            const cart = await getCart();
+            if (cart.length === 0) {
+                window.location.href = '/cart';
+                return;
+            }
 
-        document.getElementById('order-items').innerHTML = cart.map(item => `
-      <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-        <span>${item.name} × ${item.quantity}</span>
-        <span>${formatCurrency(item.price * item.quantity)}</span>
-      </div>
-    `).join('');
+            document.getElementById('order-items').innerHTML = cart.map(item => `
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>${item.name} × ${item.quantity}</span>
+            <span>${formatCurrency(item.price * item.quantity)}</span>
+          </div>
+        `).join('');
 
-        document.getElementById('total').textContent = formatCurrency(getCartTotal());
+            document.getElementById('total').textContent = formatCurrency(await getCartTotal());
+        }
 
         document.getElementById('checkout-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const errorDiv = document.getElementById('error-message');
 
+            const cart = await getCart();
             const orderData = {
                 items: cart.map(item => ({ productId: item.productId, quantity: item.quantity })),
                 shippingAddress: document.getElementById('shippingAddress').value,
@@ -111,13 +136,16 @@
             });
 
             if (response.ok && response.data.success) {
-                clearCart();
+                await clearCart();
                 showNotification('Order placed successfully!', 'success');
                 setTimeout(() => window.location.href = '/profile', 1500);
             } else {
                 errorDiv.innerHTML = `<div class="alert alert-error">${response.data.message}</div>`;
             }
         });
+
+        // Initialize checkout page
+        initializeCheckout();
     </script>
     <style>
         @media (max-width: 768px) {

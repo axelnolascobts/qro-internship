@@ -40,6 +40,10 @@ const { authMiddleware } = require('../middleware/auth.middleware');
  *                 type: string
  *               password:
  *                 type: string
+ *               role:
+ *                 type: string
+ *                 enum: [customer, seller]
+ *                 default: customer
  *     responses:
  *       201:
  *         description: User registered successfully

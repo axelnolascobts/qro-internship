@@ -5,11 +5,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Support Chat - ShopHub</title>
+
+    <!-- Set theme before CSS loads to prevent white flash -->
+    <script>
+        (function () {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+
     <link rel="stylesheet" href="/css/main.css">
     <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
 </head>
 
 <body>
+    <!-- Page Loading Overlay -->
+    <div id="page-transition" class="page-transition hidden">
+        <div class="page-transition-content">
+            <div class="page-transition-text">Loading...</div>
+        </div>
+    </div>
+
     <nav class="navbar">
         <div class="nav-container">
             <a href="/" class="nav-logo">ShopHub</a>
@@ -72,132 +88,141 @@
 
     <script src="/js/common.js"></script>
     <script>
-        const socket = io('http://localhost:5050');
-        const user = getUserData();
-        const username = user ? `${user.name} ${user.lastname}` : `Guest${Math.floor(Math.random() * 1000)}`;
-        const room = 'general-support';
-        let typingTimeout;
-        let unreadCount = 0;
-        let chatOpen = false;
+        // Initialize chat functionality using the centralized SocketManager
+        document.addEventListener('DOMContentLoaded', () => {
+            const socketManager = getSocketManager();
+            const socket = socketManager.getInstance();
+            const username = socketManager.username;
+            const room = socketManager.room;
+            let unreadCount = 0;
+            let chatOpen = false;
 
-        // Chat bubble toggle
-        document.getElementById('chat-bubble').addEventListener('click', () => {
-            const chatWindow = document.getElementById('chat-window');
-            chatOpen = !chatOpen;
-            chatWindow.classList.toggle('open');
-            if (chatOpen) {
-                unreadCount = 0;
-                updateChatBadge();
-                document.getElementById('message-input').focus();
+            // Chat bubble toggle
+            document.getElementById('chat-bubble').addEventListener('click', () => {
+                const chatWindow = document.getElementById('chat-window');
+                chatOpen = !chatOpen;
+                chatWindow.classList.toggle('open');
+                if (chatOpen) {
+                    unreadCount = 0;
+                    updateChatBadge();
+                    document.getElementById('message-input').focus();
+                }
+            });
+
+            document.getElementById('chat-close').addEventListener('click', () => {
+                document.getElementById('chat-window').classList.remove('open');
+                chatOpen = false;
+            });
+
+            function updateChatBadge() {
+                const badge = document.getElementById('chat-badge');
+                badge.textContent = unreadCount;
+                badge.style.display = unreadCount > 0 ? 'flex' : 'none';
             }
-        });
 
-        document.getElementById('chat-close').addEventListener('click', () => {
-            document.getElementById('chat-window').classList.remove('open');
-            chatOpen = false;
-        });
+            // Socket event listeners
+            socketManager.addEventListener('message-history', (messages) => {
+                const container = document.getElementById('messages');
+                if (messages.length === 0) {
+                    container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No messages yet. Start the conversation!</p>';
+                } else {
+                    container.innerHTML = messages.map(msg => `
+              <div style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                  <strong style="color: var(--primary-color);">${msg.username}</strong>
+                  <span style="font-size: 0.75rem; color: var(--text-secondary);">${formatDate(msg.timestamp)}</span>
+                </div>
+                <p style="padding: 0.5rem; background: var(--surface); border-radius: 0.5rem;">${msg.message}</p>
+              </div>
+            `).join('');
+                    container.scrollTop = container.scrollHeight;
+                }
+            });
 
-        function updateChatBadge() {
-            const badge = document.getElementById('chat-badge');
-            badge.textContent = unreadCount;
-            badge.style.display = unreadCount > 0 ? 'flex' : 'none';
-        }
-
-        socket.emit('join-room', { room, username });
-
-        socket.on('message-history', (messages) => {
-            const container = document.getElementById('messages');
-            if (messages.length === 0) {
-                container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No messages yet. Start the conversation!</p>';
-            } else {
-                container.innerHTML = messages.map(msg => `
-          <div style="margin-bottom: 1rem;">
+            socketManager.addEventListener('new-message', (message) => {
+                const container = document.getElementById('messages');
+                const messageEl = document.createElement('div');
+                messageEl.className = 'message-item';
+                messageEl.innerHTML = `
             <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
-              <strong style="color: var(--primary-color);">${msg.username}</strong>
-              <span style="font-size: 0.75rem; color: var(--text-secondary);">${formatDate(msg.timestamp)}</span>
+              <strong style="color: var(--primary-color);">${message.username}</strong>
+              <span style="font-size: 0.75rem; color: var(--text-secondary);">${formatDate(message.timestamp)}</span>
             </div>
-            <p style="padding: 0.5rem; background: var(--surface); border-radius: 0.5rem;">${msg.message}</p>
-          </div>
-        `).join('');
+            <p style="padding: 0.5rem; background: var(--surface); border-radius: 0.5rem;">${message.message}</p>
+          `;
+
+                if (container.querySelector('p[style*="text-align: center"]')) {
+                    container.innerHTML = '';
+                }
+
+                container.appendChild(messageEl);
                 container.scrollTop = container.scrollHeight;
-            }
-        });
 
-        socket.on('new-message', (message) => {
-            const container = document.getElementById('messages');
-            const messageEl = document.createElement('div');
-            messageEl.className = 'message-item';
-            messageEl.innerHTML = `
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
-          <strong style="color: var(--primary-color);">${message.username}</strong>
-          <span style="font-size: 0.75rem; color: var(--text-secondary);">${formatDate(message.timestamp)}</span>
-        </div>
-        <p style="padding: 0.5rem; background: var(--surface); border-radius: 0.5rem;">${message.message}</p>
-      `;
+                // Show unread badge if chat is closed
+                if (!chatOpen && message.username !== username) {
+                    unreadCount++;
+                    updateChatBadge();
+                }
 
-            if (container.querySelector('p[style*="text-align: center"]')) {
-                container.innerHTML = '';
-            }
+                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBDGH0fPTgjMGHm7A7+OZURE');
+                audio.play().catch(() => { });
+            });
 
-            container.appendChild(messageEl);
-            container.scrollTop = container.scrollHeight;
+            socketManager.addEventListener('users-update', (users) => {
+                document.getElementById('users-list').innerHTML = users.map(u => `<p>• ${u}</p>`).join('');
+            });
 
-            // Show unread badge if chat is closed
-            if (!chatOpen && message.username !== username) {
-                unreadCount++;
-                updateChatBadge();
-            }
+            socketManager.addEventListener('user-joined', (data) => {
+                showNotification(`${data.username} joined chat`, 'info');
+            });
 
-            const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBDGH0fPTgjMGHm7A7+OZURE');
-            audio.play().catch(() => { });
-        });
+            socketManager.addEventListener('user-reconnected', (data) => {
+                showNotification(`${data.username} reconnected to the chat`, 'info');
+            });
 
-        socket.on('users-update', (users) => {
-            document.getElementById('users-list').innerHTML = users.map(u => `<p>• ${u}</p>`).join('');
-        });
+            socketManager.addEventListener('user-left', (data) => {
+                showNotification(`${data.username} left the chat`, 'info');
+            });
 
-        socket.on('user-joined', (data) => {
-            showNotification(`${data.username} joined the chat`, 'info');
-        });
+            socketManager.addEventListener('user-left', (data) => {
+                showNotification(`${data.username} left the chat`, 'info');
+            });
 
-        socket.on('user-left', (data) => {
-            showNotification(`${data.username} left the chat`, 'info');
-        });
+            socketManager.addEventListener('user-typing', (data) => {
+                if (data.typing) {
+                    document.getElementById('typing-indicator').textContent = `${data.username} is typing...`;
+                } else {
+                    document.getElementById('typing-indicator').textContent = '';
+                }
+            });
 
-        socket.on('user-typing', (data) => {
-            if (data.typing) {
-                document.getElementById('typing-indicator').textContent = `${data.username} is typing...`;
-            } else {
-                document.getElementById('typing-indicator').textContent = '';
-            }
-        });
+            socketManager.addEventListener('cooldown-error', (data) => {
+                showNotification(data.message, 'error');
+            });
 
-        socket.on('cooldown-error', (data) => {
-            showNotification(data.message, 'error');
-        });
+            document.getElementById('message-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const input = document.getElementById('message-input');
+                const message = input.value.trim();
 
-        document.getElementById('message-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const input = document.getElementById('message-input');
-            const message = input.value.trim();
+                if (message) {
+                    socketManager.emit('send-message', { room, username, message });
+                    input.value = '';
+                    socketManager.emit('typing-stop', { room, username });
+                }
+            });
 
-            if (message) {
-                socket.emit('send-message', { room, username, message });
-                input.value = '';
-                socket.emit('typing-stop', { room, username });
-            }
-        });
-
-        document.getElementById('message-input').addEventListener('input', (e) => {
-            if (e.target.value.trim()) {
-                socket.emit('typing-start', { room, username });
-                clearTimeout(typingTimeout);
-                typingTimeout = setTimeout(() => {
-                    socket.emit('typing-stop', { room, username });
-                }, 1000);
-            } else {
-                socket.emit('typing-stop', { room, username });
-            }
+            document.getElementById('message-input').addEventListener('input', (e) => {
+                if (e.target.value.trim()) {
+                    socketManager.emit('typing-start', { room, username });
+                    clearTimeout(socketManager.typingTimeout);
+                    socketManager.typingTimeout = setTimeout(() => {
+                        socketManager.emit('typing-stop', { room, username });
+                    }, 1000);
+                } else {
+                    socketManager.emit('typing-stop', { room, username });
+                }
+            });
         });
     </script>
 
