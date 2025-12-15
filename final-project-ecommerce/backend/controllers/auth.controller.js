@@ -1,8 +1,10 @@
+// Purpose: Handles user authentication including registration, login, and token validation
 const bcrypt = require('bcryptjs');
 const { generateToken } = require('../utils/jwt.util');
 const FileManager = require('../utils/fileManager');
 const usersDB = new FileManager('data/users.json');
 
+// Registers a new user with validation and password hashing
 async function register(req, res) {
     try {
         const { name, lastname, birthdate, email, address, password, role } = req.body;
@@ -85,6 +87,7 @@ async function register(req, res) {
     }
 }
 
+// Authenticates user credentials and returns JWT token
 async function login(req, res) {
     try {
         const { email, password } = req.body;
@@ -140,6 +143,7 @@ async function login(req, res) {
     }
 }
 
+// Validates JWT token and returns user data
 async function validate(req, res) {
     try {
         // User is already validated by authMiddleware

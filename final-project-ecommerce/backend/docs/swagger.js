@@ -1,3 +1,4 @@
+// Purpose: Configures Swagger API documentation for the e-commerce endpoints
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 

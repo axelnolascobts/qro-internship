@@ -1,7 +1,9 @@
+// Purpose: Provides JWT authentication middleware and role-based access control
 const { verifyToken } = require('../utils/jwt.util');
 const FileManager = require('../utils/fileManager');
 const usersDB = new FileManager('data/users.json');
 
+// Verifies JWT token and attaches user data to request
 async function authMiddleware(req, res, next) {
     try {
         const authHeader = req.headers.authorization;
@@ -45,6 +47,7 @@ async function authMiddleware(req, res, next) {
     }
 }
 
+// Restricts access to seller and admin roles
 function sellerMiddleware(req, res, next) {
     if (req.user.role !== 'seller' && req.user.role !== 'admin') {
         return res.status(403).json({

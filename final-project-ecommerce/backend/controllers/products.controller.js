@@ -1,6 +1,8 @@
+// Purpose: Manages product CRUD operations with filtering, searching, and pagination
 const FileManager = require('../utils/fileManager');
 const productsDB = new FileManager('data/products.json');
 
+// Retrieves all products with filtering, sorting, and pagination
 async function getAllProducts(req, res) {
     try {
         const { category, minPrice, maxPrice, search, sort, page = 1, limit = 12 } = req.query;
@@ -77,6 +79,7 @@ async function getAllProducts(req, res) {
     }
 }
 
+// Retrieves specific product by ID
 async function getProductById(req, res) {
     try {
         const { id } = req.params;
@@ -102,6 +105,7 @@ async function getProductById(req, res) {
     }
 }
 
+// Creates new product with validation
 async function createProduct(req, res) {
     try {
         const { name, description, price, category, stock, image } = req.body;
@@ -155,6 +159,7 @@ async function createProduct(req, res) {
     }
 }
 
+// Updates existing product by ID
 async function updateProduct(req, res) {
     try {
         const { id } = req.params;
@@ -207,6 +212,7 @@ async function updateProduct(req, res) {
     }
 }
 
+// Deletes product by ID
 async function deleteProduct(req, res) {
     try {
         const { id } = req.params;

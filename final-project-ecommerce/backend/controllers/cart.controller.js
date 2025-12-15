@@ -1,7 +1,9 @@
+// Purpose: Manages shopping cart operations including adding, updating, and removing items
 const FileManager = require('../utils/fileManager');
 const productsDB = new FileManager('data/products.json');
 const cartsDB = new FileManager('data/carts.json');
 
+// Retrieves user's shopping cart or creates empty cart
 async function getCart(req, res) {
     try {
         const userId = req.user.id;
@@ -32,6 +34,7 @@ async function getCart(req, res) {
     }
 }
 
+// Adds product to user's cart with stock validation
 async function addToCart(req, res) {
     try {
         const userId = req.user.id;
@@ -118,6 +121,7 @@ async function addToCart(req, res) {
     }
 }
 
+// Updates quantity of item in user's cart
 async function updateCartItem(req, res) {
     try {
         const userId = req.user.id;
@@ -194,6 +198,7 @@ async function updateCartItem(req, res) {
     }
 }
 
+// Removes specific item from user's cart
 async function removeFromCart(req, res) {
     try {
         const userId = req.user.id;
@@ -255,6 +260,7 @@ async function removeFromCart(req, res) {
     }
 }
 
+// Removes all items from user's cart
 async function clearCart(req, res) {
     try {
         const userId = req.user.id;
@@ -298,6 +304,7 @@ async function clearCart(req, res) {
     }
 }
 
+// Merges local cart with server cart on login
 async function mergeCart(req, res) {
     try {
         const userId = req.user.id;
@@ -328,7 +335,7 @@ async function mergeCart(req, res) {
 
         for (const localItem of localCart) {
             const product = products.find(p => p.id === localItem.productId);
-            
+
             if (!product) {
                 continue; // Skip invalid products
             }

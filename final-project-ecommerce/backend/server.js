@@ -1,3 +1,4 @@
+// Purpose: Main Express server with Socket.IO for real-time chat and API routing
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -83,6 +84,7 @@ const connectedUsers = new Map();
 const typingUsers = new Set();
 const activeSessions = new Map(); // Track sessions to prevent duplicates
 
+// Handles new socket connections and chat events
 io.on('connection', (socket) => {
 
     // Extract session info from handshake query

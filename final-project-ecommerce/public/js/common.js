@@ -1,36 +1,45 @@
+// Purpose: Provides common utilities for authentication, cart management, and real-time chat functionality
 // API Base URL
 const API_URL = 'http://localhost:5050/api';
 
 // Authentication utilities
+// Retrieves JWT token from localStorage
 function getToken() {
     return localStorage.getItem('token');
 }
 
+// Stores JWT token in localStorage
 function setToken(token) {
     localStorage.setItem('token', token);
 }
 
+// Removes JWT token from localStorage
 function removeToken() {
     localStorage.removeItem('token');
 }
 
+// Retrieves user data from localStorage
 function getUserData() {
     const userData = localStorage.getItem('user');
     return userData ? JSON.parse(userData) : null;
 }
 
+// Stores user data in localStorage
 function setUserData(user) {
     localStorage.setItem('user', JSON.stringify(user));
 }
 
+// Removes user data from localStorage
 function removeUserData() {
     localStorage.removeItem('user');
 }
 
+// Checks if user is authenticated
 function isAuthenticated() {
     return !!getToken();
 }
 
+// Logs out user and clears authentication data
 async function logout() {
     // Clear server cart if authenticated
     if (isAuthenticated()) {
@@ -40,13 +49,14 @@ async function logout() {
             console.error('Error clearing cart on logout:', error);
         }
     }
-    
+
     removeToken();
     removeUserData();
     window.location.href = '/login';
 }
 
 // API Request helper
+// Makes authenticated API requests with error handling
 async function apiRequest(endpoint, options = {}) {
     const token = getToken();
     const headers = {
@@ -79,6 +89,7 @@ async function apiRequest(endpoint, options = {}) {
 }
 
 // Cart utilities
+// Retrieves user cart from server or localStorage
 async function getCart() {
     if (!isAuthenticated()) {
         // Fallback to localStorage for guest users
@@ -100,6 +111,7 @@ async function getCart() {
     return cart ? JSON.parse(cart) : [];
 }
 
+// Stores cart data and updates badge
 async function setCart(cart) {
     if (!isAuthenticated()) {
         // Use localStorage for guest users
@@ -125,6 +137,7 @@ async function setCart(cart) {
     }
 }
 
+// Adds product to cart with validation
 async function addToCart(product, quantity = 1) {
     if (!isAuthenticated()) {
         // Use localStorage for guest users
@@ -169,6 +182,7 @@ async function addToCart(product, quantity = 1) {
     }
 }
 
+// Removes item from cart
 async function removeFromCartAPI(productId) {
     if (!isAuthenticated()) {
         // Use localStorage for guest users
@@ -197,6 +211,7 @@ async function removeFromCartAPI(productId) {
     }
 }
 
+// Updates cart item quantity
 async function updateCartItemQuantityAPI(productId, quantity) {
     if (!isAuthenticated()) {
         // Use localStorage for guest users
@@ -234,6 +249,7 @@ async function updateCartItemQuantityAPI(productId, quantity) {
     }
 }
 
+// Clears all items from cart
 async function clearCart() {
     if (!isAuthenticated()) {
         // Use localStorage for guest users
@@ -257,16 +273,19 @@ async function clearCart() {
     }
 }
 
+// Calculates total cart value
 async function getCartTotal() {
     const cart = await getCart();
     return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
 }
 
+// Counts total items in cart
 async function getCartItemCount() {
     const cart = await getCart();
     return cart.reduce((count, item) => count + item.quantity, 0);
 }
 
+// Updates cart badge with item count
 async function updateCartBadge() {
     const badge = document.querySelector('.cart-badge .badge');
     if (badge) {
@@ -283,6 +302,7 @@ async function updateCartBadge() {
 }
 
 // Synchronous version for non-critical updates
+// Synchronously updates cart badge
 function updateCartBadgeSync() {
     const badge = document.querySelector('.cart-badge .badge');
     if (badge) {
@@ -293,6 +313,7 @@ function updateCartBadgeSync() {
 }
 
 // Merge local cart with server cart on login
+// Merges local cart with server cart on login
 async function mergeCartOnLogin() {
     if (!isAuthenticated()) return;
 
@@ -322,15 +343,18 @@ async function mergeCartOnLogin() {
 }
 
 // Theme utilities
+// Retrieves current theme from localStorage
 function getTheme() {
     return localStorage.getItem('theme') || 'light';
 }
 
+// Sets theme and updates document
 function setTheme(theme) {
     localStorage.setItem('theme', theme);
     document.documentElement.setAttribute('data-theme', theme);
 }
 
+// Toggles between light and dark themes
 function toggleTheme() {
     const currentTheme = getTheme();
     const newTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -338,12 +362,14 @@ function toggleTheme() {
 }
 
 // Initialize theme
+// Initializes theme on page load
 function initTheme() {
     const theme = getTheme();
     setTheme(theme);
 }
 
 // Notification utility
+// Shows notification message to user
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `alert alert-${type}`;
@@ -391,6 +417,7 @@ style.textContent = `
 document.head.appendChild(style);
 
 // Navigation utilities
+// Initializes navigation menu and event listeners
 async function initNavigation() {
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
@@ -435,6 +462,7 @@ async function initNavigation() {
     }
 }
 
+// Updates navigation based on auth status
 async function updateNavigation() {
     try {
         const user = getUserData();
@@ -484,6 +512,7 @@ async function updateNavigation() {
 }
 
 // Protected page check
+// Redirects unauthenticated users from protected pages
 function checkAuth() {
     const publicPages = ['/login', '/register', '/catalog', '/', '/product'];
     const currentPath = window.location.pathname;
@@ -498,6 +527,7 @@ function checkAuth() {
 }
 
 // Format currency
+// Formats amount as currency
 function formatCurrency(amount) {
     return new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -506,6 +536,7 @@ function formatCurrency(amount) {
 }
 
 // Format date
+// Formats date string to readable format
 function formatDate(dateString) {
     return new Intl.DateTimeFormat('en-US', {
         year: 'numeric',
@@ -517,34 +548,38 @@ function formatDate(dateString) {
 }
 
 // Chat username utilities
+// Retrieves or generates chat username
 function getChatUsername() {
     const storedUsername = localStorage.getItem('chatUsername');
     if (storedUsername) {
         return storedUsername;
     }
-    
+
     const user = getUserData();
     if (user) {
         const username = `${user.name} ${user.lastname}`;
         localStorage.setItem('chatUsername', username);
         return username;
     }
-    
+
     // Generate guest username only once
     const guestUsername = `Guest${Math.floor(Math.random() * 1000)}`;
     localStorage.setItem('chatUsername', guestUsername);
     return guestUsername;
 }
 
+// Stores chat username in localStorage
 function setChatUsername(username) {
     localStorage.setItem('chatUsername', username);
 }
 
+// Removes chat username from localStorage
 function clearChatUsername() {
     localStorage.removeItem('chatUsername');
 }
 
 // Session management utilities
+// Generates or retrieves session ID for socket
 function getSessionId() {
     let sessionId = sessionStorage.getItem('socketSessionId');
     if (!sessionId) {
@@ -554,6 +589,7 @@ function getSessionId() {
     return sessionId;
 }
 
+// Clears session data from sessionStorage
 function clearSessionData() {
     sessionStorage.removeItem('socketSessionId');
     sessionStorage.removeItem('socketReconnecting');
@@ -561,6 +597,7 @@ function clearSessionData() {
 
 // Centralized Socket Manager
 class SocketManager {
+    // Initializes SocketManager with connection settings
     constructor() {
         this.socket = null;
         this.username = null;
@@ -576,6 +613,7 @@ class SocketManager {
         this.hasJoinedRoom = false;
     }
 
+    // Returns singleton socket instance
     getInstance() {
         if (!this.socket) {
             this.initializeConnection();
@@ -583,6 +621,7 @@ class SocketManager {
         return this.socket;
     }
 
+    // Creates socket connection with session tracking
     initializeConnection() {
         if (typeof io === 'undefined') {
             console.error('Socket.IO library not loaded');
@@ -590,10 +629,10 @@ class SocketManager {
         }
 
         this.username = getChatUsername();
-        
+
         // Check if we're reconnecting from a page navigation
         const isReconnecting = sessionStorage.getItem('socketReconnecting') === 'true';
-        
+
         // Create socket with session ID for server identification
         this.socket = io('http://localhost:5050', {
             query: {
@@ -601,26 +640,27 @@ class SocketManager {
                 isReconnecting: isReconnecting
             }
         });
-        
+
         this.setupConnectionEvents();
-        
+
         // Don't auto-join room if reconnecting - wait for server to acknowledge
         if (!isReconnecting) {
             this.joinRoom();
         }
-        
+
         return this.socket;
     }
 
+    // Sets up socket event listeners
     setupConnectionEvents() {
         this.socket.on('connect', () => {
             console.log('Socket connected:', this.socket.id);
             this.isConnected = true;
             this.reconnectAttempts = 0;
-            
+
             // Clear reconnecting flag on successful connection
             sessionStorage.removeItem('socketReconnecting');
-            
+
             // Join room if not already joined (server will acknowledge reconnection)
             if (!this.hasJoinedRoom) {
                 this.joinRoom();
@@ -631,12 +671,12 @@ class SocketManager {
             console.log('Socket disconnected:', reason);
             this.isConnected = false;
             this.hasJoinedRoom = false;
-            
+
             // Set reconnecting flag for page navigation scenarios
             if (reason === 'io client disconnect' || reason === 'transport close') {
                 sessionStorage.setItem('socketReconnecting', 'true');
             }
-            
+
             if (reason === 'io server disconnect') {
                 // Server initiated disconnect, don't reconnect automatically
                 this.socket.connect();
@@ -658,11 +698,12 @@ class SocketManager {
         });
     }
 
+    // Handles socket reconnection logic
     handleReconnect() {
         if (this.reconnectAttempts < this.maxReconnectAttempts) {
             this.reconnectAttempts++;
             console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
-            
+
             setTimeout(() => {
                 this.socket.connect();
             }, this.reconnectDelay * this.reconnectAttempts);
@@ -671,10 +712,11 @@ class SocketManager {
         }
     }
 
+    // Joins chat room with username
     joinRoom() {
         if (this.socket && this.isConnected && this.username) {
-            this.socket.emit('join-room', { 
-                room: this.room, 
+            this.socket.emit('join-room', {
+                room: this.room,
                 username: this.username,
                 sessionId: this.sessionId
             });
@@ -682,6 +724,7 @@ class SocketManager {
         }
     }
 
+    // Disconnects socket and clears session
     disconnect() {
         if (this.socket) {
             this.socket.disconnect();
@@ -690,10 +733,11 @@ class SocketManager {
         }
     }
 
+    // Updates username and rejoins room
     updateUsername(newUsername) {
         this.username = newUsername;
         setChatUsername(newUsername);
-        
+
         if (this.socket && this.isConnected) {
             // Rejoin room with new username
             this.joinRoom();
@@ -701,10 +745,11 @@ class SocketManager {
     }
 
     // Event listener management
+    // Adds event listener to socket
     addEventListener(event, callback) {
         if (this.socket) {
             this.socket.on(event, callback);
-            
+
             // Store listener for cleanup
             if (!this.eventListeners.has(event)) {
                 this.eventListeners.set(event, []);
@@ -713,10 +758,11 @@ class SocketManager {
         }
     }
 
+    // Removes event listener from socket
     removeEventListener(event, callback) {
         if (this.socket) {
             this.socket.off(event, callback);
-            
+
             if (this.eventListeners.has(event)) {
                 const listeners = this.eventListeners.get(event);
                 const index = listeners.indexOf(callback);
@@ -727,6 +773,7 @@ class SocketManager {
         }
     }
 
+    // Emits event to socket
     emit(event, data) {
         if (this.socket && this.isConnected) {
             this.socket.emit(event, data);
@@ -734,12 +781,13 @@ class SocketManager {
     }
 
     // Cleanup method
+    // Cleans up event listeners and timeouts
     cleanup() {
         if (this.typingTimeout) {
             clearTimeout(this.typingTimeout);
             this.typingTimeout = null;
         }
-        
+
         // Remove all event listeners
         this.eventListeners.forEach((listeners, event) => {
             listeners.forEach(callback => {
@@ -747,7 +795,7 @@ class SocketManager {
             });
         });
         this.eventListeners.clear();
-        
+
         // Don't disconnect on page navigation - preserve session
         // Only disconnect on explicit logout or browser close
         // this.disconnect();
@@ -768,6 +816,7 @@ class SocketManager {
 // Global socket manager instance
 let socketManager = null;
 
+// Returns global socket manager instance
 function getSocketManager() {
     if (!socketManager) {
         socketManager = new SocketManager();
@@ -796,6 +845,7 @@ window.addEventListener('pagehide', (event) => {
 });
 
 // Global Chat Widget
+// Initializes global chat widget
 function initGlobalChat() {
     // Don't initialize on the chat page itself
     if (window.location.pathname === '/chat') return;
@@ -811,6 +861,7 @@ function initGlobalChat() {
     }
 }
 
+// Sets up chat widget UI and functionality
 function setupChat() {
     // Check if chat widget already exists
     if (document.getElementById('chat-bubble')) {
@@ -1217,9 +1268,10 @@ function setupChat() {
 let loadingTimeout = null;
 let loadingStartTime = null;
 
+// Shows page loading transition
 function showPageTransition() {
     loadingStartTime = Date.now();
-    
+
     // Create loading overlay if it doesn't exist
     let overlay = document.getElementById('page-transition');
     if (!overlay) {
@@ -1232,26 +1284,27 @@ function showPageTransition() {
         `;
         document.body.appendChild(overlay);
     }
-    
+
     // Only show overlay after 2 seconds
     loadingTimeout = setTimeout(() => {
         // Show overlay with current theme
         const theme = getTheme();
         document.documentElement.setAttribute('data-theme', theme);
         overlay.classList.remove('hidden');
-        
+
         // Prevent scrolling during loading
         document.body.style.overflow = 'hidden';
     }, 2000);
 }
 
+// Hides page loading transition
 function hidePageTransition() {
     // Clear the timeout if it hasn't fired yet
     if (loadingTimeout) {
         clearTimeout(loadingTimeout);
         loadingTimeout = null;
     }
-    
+
     const overlay = document.getElementById('page-transition');
     if (overlay && !overlay.classList.contains('hidden')) {
         overlay.classList.add('hidden');
@@ -1261,7 +1314,7 @@ function hidePageTransition() {
                 overlay.parentNode.removeChild(overlay);
             }
         }, 300);
-        
+
         // Restore scrolling
         document.body.style.overflow = '';
     }

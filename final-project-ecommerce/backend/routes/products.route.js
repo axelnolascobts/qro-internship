@@ -1,3 +1,4 @@
+// Purpose: Defines API routes for product CRUD operations with seller access control
 const express = require('express');
 const router = express.Router();
 const {

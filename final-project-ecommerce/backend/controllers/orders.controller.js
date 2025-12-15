@@ -1,3 +1,4 @@
+// Purpose: Handles order creation, retrieval, and management with encrypted payment processing
 const FileManager = require('../utils/fileManager');
 const crypto = require('crypto');
 const ordersDB = new FileManager('data/orders.json');
@@ -7,6 +8,7 @@ const productsDB = new FileManager('data/products.json');
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'your-32-character-secret-key!!';
 const ALGORITHM = 'aes-256-cbc';
 
+// Encrypts sensitive data using AES-256-CBC
 function encrypt(text) {
     const iv = crypto.randomBytes(16);
     const key = Buffer.from(ENCRYPTION_KEY.padEnd(32, '0').slice(0, 32));
@@ -16,6 +18,7 @@ function encrypt(text) {
     return iv.toString('hex') + ':' + encrypted;
 }
 
+// Decrypts sensitive data using AES-256-CBC
 function decrypt(text) {
     const parts = text.split(':');
     const iv = Buffer.from(parts.shift(), 'hex');
@@ -27,6 +30,7 @@ function decrypt(text) {
     return decrypted;
 }
 
+// Creates new order with encrypted payment info and stock updates
 async function createOrder(req, res) {
     try {
         const { items, shippingAddress, cardNumber, cardHolder, cardExpiry, cardCVV } = req.body;
@@ -129,6 +133,7 @@ async function createOrder(req, res) {
     }
 }
 
+// Retrieves specific order by ID with access control
 async function getOrderById(req, res) {
     try {
         const { id } = req.params;
@@ -173,6 +178,7 @@ async function getOrderById(req, res) {
     }
 }
 
+// Retrieves all orders for authenticated user
 async function getUserOrders(req, res) {
     try {
         const userId = req.user.id;

@@ -1,3 +1,4 @@
+// Purpose: Defines API routes for user authentication endpoints
 const express = require('express');
 const router = express.Router();
 const { register, login, validate } = require('../controllers/auth.controller');

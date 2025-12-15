@@ -1,3 +1,4 @@
+// Purpose: Defines API routes for shopping cart management endpoints
 const express = require('express');
 const router = express.Router();
 const { authMiddleware } = require('../middleware/auth.middleware');
