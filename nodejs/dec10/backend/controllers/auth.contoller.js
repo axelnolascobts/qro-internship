@@ -104,7 +104,7 @@ export const loginController = async (req, res) => {
 export const validateController = async (req, res) => {
   try {
     const users = await readJSON("users.json");
-    const user = users.find(u => u.id === req.body.id);
+    const user = users.find(u => u.id === req.user.id);
 
     if (!user) {
       return res.status(401).json({ error: "User not found" });

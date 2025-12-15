@@ -22,10 +22,21 @@ const io = new Server(httpServer, {
 });
 
 const PORT = 5050;
+
+// Chat state management
+const connectedUsers = new Map();
+const messageCooldowns = new Map();
+const typingUsers = new Map();
+const COOLDOWN_TIME = 3000; // 3 seconds
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "../frontend")));
+
+app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/orders", orderRoutes);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs, {
   customCss: ".swagger-ui .topbar {display: none}"

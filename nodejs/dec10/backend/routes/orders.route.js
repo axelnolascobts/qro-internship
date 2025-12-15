@@ -103,3 +103,5 @@ router.get("/:id", validateRoute, getOrderByIdController);
  *         description: Orders retrieved successfully
  */
 router.get("/", validateRoute, getAllOrdersController);
+
+export default router;
