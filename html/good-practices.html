@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Character encoding should always be declared first -->
+    <meta charset="UTF-8" />
+
+    <!-- Viewport meta tag is essential for responsive design -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Descriptive page title helps with SEO and accessibility -->
+    <meta name="description" content="A simple HTML page demonstrating good HTML practices for the QRO internship program." />
+
+    <title>Good HTML Practices – QRO Internship</title>
+  </head>
+
+  <body>
+    <!-- =============================================
+         HEADER: site-wide branding and navigation
+    ============================================= -->
+    <header>
+      <h1>Good HTML Practices</h1>
+
+      <!-- Use <nav> with an aria-label when there are multiple navigations -->
+      <nav aria-label="Main navigation">
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#practices">Practices</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- =============================================
+         MAIN: primary content of the page
+    ============================================= -->
+    <main>
+
+      <!-- Use <section> to group thematically related content -->
+      <section id="about">
+        <!-- Heading hierarchy: h1 is used once (in header), sections use h2 -->
+        <h2>About This Page</h2>
+        <p>
+          This page demonstrates simple <strong>good practices</strong> when
+          writing HTML. Following these practices keeps your code accessible,
+          maintainable, and SEO-friendly.
+        </p>
+      </section>
+
+      <!-- =============================================
+           PRACTICES: list of HTML best practices
+      ============================================= -->
+      <section id="practices">
+        <h2>Key Practices</h2>
+
+        <!-- Use ordered list when sequence matters -->
+        <ol>
+          <li>Always declare <code>&lt;!DOCTYPE html&gt;</code> at the top.</li>
+          <li>Set the <code>lang</code> attribute on <code>&lt;html&gt;</code>.</li>
+          <li>Include a <code>&lt;meta charset="UTF-8"&gt;</code> tag.</li>
+          <li>Add a meaningful <code>&lt;title&gt;</code>.</li>
+          <li>Use semantic elements such as <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;article&gt;</code>, and <code>&lt;footer&gt;</code>.</li>
+          <li>Keep heading levels in logical order (h1 → h2 → h3…).</li>
+          <li>Always add <code>alt</code> text to images.</li>
+          <li>Associate every form field with a <code>&lt;label&gt;</code>.</li>
+          <li>Use <code>&lt;button&gt;</code> for interactive actions, not plain <code>&lt;div&gt;</code>.</li>
+          <li>Write descriptive link text instead of "click here".</li>
+        </ol>
+
+        <!-- Use <article> for self-contained content -->
+        <article>
+          <h3>Example: Accessible Image</h3>
+          <!-- alt attribute describes the image for screen readers -->
+          <img
+            src="https://via.placeholder.com/400x200"
+            alt="A grey placeholder image showing dimensions 400 by 200 pixels"
+            width="400"
+            height="200"
+          />
+        </article>
+      </section>
+
+      <!-- =============================================
+           CONTACT: accessible form example
+      ============================================= -->
+      <section id="contact">
+        <h2>Contact Us</h2>
+
+        <!-- Native browser validation is enabled by default; avoid novalidate unless providing custom validation -->
+        <form action="#" method="post">
+          <!-- Every input must have an associated <label> -->
+          <div>
+            <label for="name">Full Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              autocomplete="name"
+              required
+              aria-required="true"
+            />
+          </div>
+
+          <div>
+            <label for="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              autocomplete="email"
+              required
+              aria-required="true"
+            />
+          </div>
+
+          <div>
+            <label for="message">Message</label>
+            <textarea
+              id="message"
+              name="message"
+              rows="5"
+              required
+              aria-required="true"
+            ></textarea>
+          </div>
+
+          <!-- Use <button type="submit"> instead of <input type="submit"> -->
+          <button type="submit">Send Message</button>
+        </form>
+      </section>
+
+    </main>
+
+    <!-- =============================================
+         FOOTER: secondary information
+    ============================================= -->
+    <footer>
+      <p>
+        &copy; 2026 QRO Internship Program.
+        <!-- Descriptive link text; avoid "click here" -->
+        <a href="https://developer.mozilla.org/en-US/docs/Learn/HTML" target="_blank" rel="noopener noreferrer">
+          Learn more about HTML on MDN
+        </a>
+      </p>
+    </footer>
+
+  </body>
+</html>
